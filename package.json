@@ -1,0 +1,31 @@
+{
+  "name": "node-red-contrib-wot",
+  "version": "0.1.0",
+  "description": "Web of Things node for node-RED.",
+  "author": "hassib.belhaj_hassine@siemens.com",
+  "license": "Siemens AG",
+  "keywords": [
+    "wot",
+    "node-red"
+  ],
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "node-red": {
+    "nodes": {
+      "wot-thing": "src/wot-thing.js",
+      "wot-property": "src/wot-property.js",
+      "wot-action": "src/wot-action.js",
+      "wot-event": "src/wot-event.js"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@node-wot/core": "0.6.2-SNAPSHOT.1",
+    "@node-wot/binding-http": "0.6.2-SNAPSHOT.1",
+    "@node-wot/binding-coap": "0.6.2-SNAPSHOT.1",
+    "@node-wot/binding-mqtt": "0.6.2-SNAPSHOT.1"
+  }
+}

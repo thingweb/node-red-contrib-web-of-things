@@ -1,0 +1,96 @@
+<script type="text/javascript">
+    RED.nodes.registerType("subscribe-event",{
+        category: "Web of Things",
+        color: "#5fa2a2",
+        defaults: {
+            name: {value:""},
+            topic: {value:""},
+            thing: {value:"", type: "consumed-thing", required: true},
+            event: {value: "", required: true}
+        },
+        inputs:0,
+        outputs:1,
+        icon: "arrow-in.png",
+        paletteLabel: "Subscribe Event",
+        align: "left",
+        label: function() {
+            if (this.name) {
+                return this.name
+            } else if (this.event) {
+                return "Event: " + this.event 
+            } else {
+                return "subscribe-event";
+            }
+        },
+        oneditprepare: function() {
+            let node = this;
+
+            $("select#node-input-thing").change(function () {
+                if ($("select#node-input-thing").val() !== "_ADD_") {
+                    showOptions()
+                } else {
+                    hideOptions()
+                }
+            })
+
+            function showOptions() {
+                let thingID = $("select#node-input-thing").val();
+                if (thingID) {
+                    RED.nodes.eachConfig((config) => {
+                        if (config.id === thingID && config.td) {
+                            // delete old events
+                            let select = document.getElementById("node-input-event");
+                            while (select.firstChild) select.removeChild(select.firstChild);
+                            // Populate with events
+                            let indx = 0;
+                            Object.keys(JSON.parse(config.td).events).forEach(event => {
+                                let opt = document.createElement('option');
+                                opt.value = event;
+                                opt.innerHTML = event;
+                                select.appendChild(opt);
+                                if (event === node.event) {
+                                    select.selectedIndex = indx
+                                }
+                                indx++;
+                            });
+                            // Show containing div
+                            if (!select.firstChild) {
+                                $("div#event-row").text("ConsumedThing has no events")
+                            }
+                            $("div#event-row").show()
+                        }
+                    })
+                }
+            }
+
+            function hideOptions() {
+                let select = document.getElementById("node-input-event").innerText = ""
+                node.event = ""
+                $("div#event-row").hide()
+            }
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="subscribe-event">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-topic"><i class="fa fa-tag"></i> Topic:</label>
+        <input type="text" id="node-input-topic" placeholder="Topic"/><br/>
+    </div>
+    <div class="form-row">
+        <label for="node-input-thing"><i class="fa fa-gears"></i> Thing</label>
+        <input type="text" id="node-input-thing" placeholder="Thing">
+    </div>
+    <div class="form-row" id="event-row" style="display:none">
+        <label for="node-input-event"><i class="fa fa-bell"></i> Event</label>
+        <select id="node-input-event">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="subscribe-event">
+    <p>A node that subscribes to a WoT event and injects data into the flow when it receives it.</p>
+</script>

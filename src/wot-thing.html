@@ -1,0 +1,76 @@
+<script type="text/javascript">
+    RED.nodes.registerType("consumed-thing",{
+        category: "config",
+        defaults: {
+            tdLink: {value: "", required: false},
+            td: {value: "", required: false},  //TODO: add validator to make sure that at least one is given
+            http: {value: true},
+            coap: {value: false},
+            mqtt: {value: false}
+        },
+        label: function() {
+            return this.name||this.td.title||"consumed-thing";
+        },
+        oneditprepare: function() { 
+            let node = this;
+
+            $("#fetch-button").click(function () {
+                let tdLink = $("#node-config-input-tdLink").val()
+                console.log(tdLink)
+                if (tdLink) {
+                    node.tdLink = tdLink;
+                    let request = new XMLHttpRequest();
+                    request.open("GET", tdLink);
+                    request.onload = function() {
+                        node.td = request.response;
+                        $("#node-config-input-td").val(request.response);
+                    }
+                    request.send();
+                }
+            })
+        },
+        oneditsave: function () {
+            let node = this;
+            let tdLink = $("#node-config-input-tdLink").val()
+
+            if (tdLink) {
+                let request = new XMLHttpRequest();
+                request.open("GET", tdLink);
+                request.onload = function() {
+                    node.td = request.response;
+                }
+                request.send();
+            }
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="consumed-thing">
+    <div class="form-row">
+        <label for="node-config-input-td"><i class="fa fa-file-text"></i> TD JSON</label>
+        <input type="text" id="node-config-input-td" style="height:200px">
+    </div>
+    <div class="form-row">
+        <p>Fetch TD from URL:</p>
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-tdLink"><i class="fa fa-link"></i> Link to TD</label>
+        <input type="url" id="node-config-input-tdLink" style="width:60%">
+        <button type="button" id="fetch-button">Fetch</button>
+    </div>
+    <div>
+        <p>Support the following bindings:</p>
+        <div class="form-row">
+            <label for="node-config-input-http"> HTTP / HTTPS</label>
+            <input type="checkbox" id="node-config-input-http" checked>
+            <label for="node-config-input-coap"> COAP / COAPS</label>
+            <input type="checkbox" id="node-config-input-coap">
+            <label for="node-config-input-mqtt"> MQTT</label>
+            <input type="checkbox" id="node-config-input-mqtt">
+        </div>
+    </div>
+</script>
+
+// TODO: 
+    - Validate TD
+    - Move to JS editor

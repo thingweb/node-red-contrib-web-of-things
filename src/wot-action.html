@@ -1,0 +1,96 @@
+<script type="text/javascript">
+    RED.nodes.registerType("invoke-action",{
+        category: "Web of Things",
+        color: "#5fa2a2",
+        defaults: {
+            name: {value:""},
+            topic: {value: ""},
+            thing: {value:"", type: "consumed-thing", required: true},
+            action: {value: "", required: true}
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "arrow-in.png",
+        paletteLabel: "Invoke Action",
+        align: "right",
+        label: function() {
+            if (this.name) {
+                return this.name
+            } else if (this.action) {
+                return "Action: " + this.action
+            } else {
+                return "invoke-action";
+            }
+        },
+        oneditprepare: function() {
+            let node = this;
+
+            $("select#node-input-thing").change(function () {
+                if ($("select#node-input-thing").val() !== "_ADD_") {
+                    showOptions()
+                } else {
+                    hideOptions()
+                }
+            })
+
+            function showOptions() {
+                let thingID = $("select#node-input-thing").val();
+                if (thingID) {
+                    RED.nodes.eachConfig((config) => {
+                        if (config.id === thingID && config.td) {
+                            // delete old actions
+                            let select = document.getElementById("node-input-action");
+                            while (select.firstChild) select.removeChild(select.firstChild);
+                            // Populate with new actions
+                            let indx = 0;
+                            Object.keys(JSON.parse(config.td).actions).forEach(action => {
+                                let opt = document.createElement('option');
+                                opt.value = action;
+                                opt.innerHTML = action;
+                                select.appendChild(opt);
+                                if (action === node.action) {
+                                    select.selectedIndex = indx
+                                }
+                                indx++;
+                            });
+                            // Show containing div
+                            if (!select.firstChild) {
+                                $("div#action-row").text("ConsumedThing has no actions")
+                            }
+                            $("div#action-row").show()
+                        }
+                    })
+                }
+            }
+
+            function hideOptions() {
+                let select = document.getElementById("node-input-action").innerText = ""
+                node.action = ""
+                $("div#action-row").hide()
+            }
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="invoke-action">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-topic"><i class="fa fa-tag"></i> Topic:</label>
+        <input type="text" id="node-input-topic" placeholder="Topic"/><br/>
+    </div>
+    <div class="form-row">
+        <label for="node-input-thing"><i class="fa fa-gears"></i> Thing</label>
+        <input type="text" id="node-input-thing" placeholder="Thing">
+    </div>
+    <div class="form-row" id="action-row" style="display:none">
+        <label for="node-input-action"><i class="fa fa-gear"></i> Action</label>
+        <select id="node-input-action" style="width:60%"></select>
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="invoke-action">
+    <p>A node that invokes a WoT action with the message payload as input data.</p>
+</script>
