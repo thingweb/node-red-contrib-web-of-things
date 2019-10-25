@@ -15,6 +15,7 @@
     "type" : "git",
     "url" : "https://github.com/thingweb/node-red-contrib-web-of-things"
   },
+  "homepage": "https://github.com/thingweb/node-red-contrib-web-of-things/blob/master/README.md",
   "node-red": {
     "nodes": {
       "wot-thing": "src/wot-thing.js",
