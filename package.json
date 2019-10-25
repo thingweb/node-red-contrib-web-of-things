@@ -1,5 +1,5 @@
 {
-  "name": "node-red-contrib-wot",
+  "name": "node-red-contrib-web-of-things",
   "version": "1.0.0",
   "description": "Web of Things node for node-RED.",
   "author": "hassib.belhaj_hassine@siemens.com",
