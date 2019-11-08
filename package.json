@@ -3,7 +3,7 @@
   "version": "1.0.1",
   "description": "Web of Things node for node-RED.",
   "author": "hassib.belhaj_hassine@siemens.com",
-  "license": "Siemens AG",
+  "license": "MIT",
   "keywords": [
     "wot",
     "node-red"
