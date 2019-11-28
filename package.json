@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-web-of-things",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Web of Things node for node-RED.",
   "author": "hassib.belhaj_hassine@siemens.com",
   "license": "MIT",
@@ -12,8 +12,8 @@
     "node": ">=8.0.0"
   },
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/thingweb/node-red-contrib-web-of-things"
+    "type": "git",
+    "url": "https://github.com/thingweb/node-red-contrib-web-of-things"
   },
   "homepage": "https://github.com/thingweb/node-red-contrib-web-of-things/blob/master/README.md",
   "node-red": {
