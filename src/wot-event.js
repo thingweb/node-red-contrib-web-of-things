@@ -18,7 +18,7 @@ module.exports = function(RED) {
 
         
         RED.nodes.getNode(config.thing).consumedThing.then((consumedThing) => {
-            node.subscription = consumedThing.events[config.event].subscribe(
+            node.subscription = consumedThing.subscribeEvent(config.event,
                 (resp) => {
                     if (resp) node.send({payload: resp, topic: config.topic})
                     node.status({
