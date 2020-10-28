@@ -15,15 +15,8 @@ module.exports = function(RED) {
 
         this.on('input', function(msg) {
             RED.nodes.getNode(config.thing).consumedThing.then((consumedThing) => {
-                if (msg.payload["uriVariables"]) {
-                    var input = msg.payload["input"];
-                    var uriVariables = msg.payload["uriVariables"];
-                    uriVariables = {uriVariables};
-                } else {
-                    var input = msg.payload;
-                    var uriVariables = undefined;
-                }
-                consumedThing.invokeAction(config.action, input, uriVariables)
+                const uriVariables = (config.uriVariables)? JSON.parse(config.uriVariables) : undefined;
+                consumedThing.invokeAction(config.action, msg.payload, {"uriVariables": uriVariables})
                     .then((resp) => {
                         if (resp) node.send({payload: resp, topic: config.topic})
                         node.status({
