@@ -22,7 +22,8 @@ module.exports = function(RED) {
         RED.nodes.getNode(config.thing).consumedThing.then((consumedThing) => {
             this.interval_id = setInterval(
                 function readProperty() { 
-                    consumedThing.properties[config.property].read()
+                    const uriVariables = (config.uriVariables)? JSON.parse(config.uriVariables) : undefined;
+                    consumedThing.readProperty(config.property, {"uriVariables": uriVariables})
                         .then((resp) => {
                             node.send({payload: resp, topic: config.topic}) 
                             node.status({
@@ -71,7 +72,8 @@ module.exports = function(RED) {
 
         RED.nodes.getNode(config.thing).consumedThing.then((consumedThing) => {
             node.on('input', function(msg) {
-                consumedThing.properties[config.property].write(msg.payload)
+                const uriVariables = (config.uriVariables)? JSON.parse(config.uriVariables) : undefined;
+                consumedThing.writeProperty(config.property, msg.payload, {"uriVariables": uriVariables})
                 .then((resp) => {
                     if (resp) node.send({payload: resp, topic: config.topic})
                     node.status({

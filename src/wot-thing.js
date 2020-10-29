@@ -29,7 +29,7 @@ module.exports = function(RED) {
             }
 
             servient.start().then((thingFactory) => {
-                let consumedThing = thingFactory.consume(this.td);
+                let consumedThing = thingFactory.consume(JSON.parse(this.td));
                 resolve(consumedThing);
             })
         })

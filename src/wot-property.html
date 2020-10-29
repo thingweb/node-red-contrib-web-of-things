@@ -7,6 +7,7 @@
             topic: {value:""},
             thing: {value:"", type: "consumed-thing", required: true},
             property: {value: "", required: true},
+            uriVariables: {value: ""},
             interval: {value: 5},
             observe: {value: false}
         },
@@ -26,6 +27,15 @@
         },
         oneditprepare: function() {
             let node = this;
+
+            $("#node-input-uriVariables").typedInput({
+                type:"json",
+                types:["json"]
+            });
+
+            // Should be hidden only after typedInput is created
+            // Otherwise the json input field for uriVariables is not drawn properly
+            $("div#property-row").hide();
 
             $("#node-input-interval").spinner({
                 min: 1,
@@ -122,16 +132,20 @@
         <label for="node-input-thing"><i class="fa fa-gears "></i> Thing</label>
         <input type="text" id="node-input-thing" placeholder="Thing">
     </div>
-    <div id="property-row", style="display:none">
+    <div id="property-row">
         <div class="form-row">
             <label for="node-input-property"><i class="fa fa-info "></i> Property</label>
             <select id="node-input-property"></select>
         </div>
         <div class="form-row">
+            <label for="node-input-uriVariables"><i class="fa fa-gear "></i> uriVariables</label>
+            <input type="text" id="node-input-uriVariables" placeholder='{"foo": "bar"}'>
+        </div>
+        <div class="form-row">
             <label for="node-input-interval"><i class="fa fa-clock-o"></i> Interval (Sec)</label>
             <input type="text" id="node-input-interval" placeholder="5">
         </div>
-        <div class="form-row" id="property-observe", style="display:none">
+        <div class="form-row" id="property-observe" style="display:none">
             <label for="node-input-observe"><i class="fa fa-bell"></i> Observe</label>
             <input type="checkbox" id="node-input-observe">
         </div>
@@ -151,7 +165,8 @@
             name: {value:""},
             topic: {value:""},
             thing: {value:"", type: "consumed-thing", required: true},
-            property: {value: "", required: true}
+            property: {value: "", required: true},
+            uriVariables: {value: ""}
         },
         inputs:1,
         outputs:0,
@@ -169,6 +184,15 @@
         },
         oneditprepare: function() {
             let node = this;
+
+            $("#node-input-uriVariables").typedInput({
+                type:"json",
+                types:["json"]
+            });
+
+            // Should be hidden only after typedInput is created
+            // Otherwise the json input field for uriVariables is not drawn properly
+            $("div#property-write-row").hide();
 
             $("select#node-input-thing").change(function () {
                 if (this.value !== "_ADD_") {
@@ -233,9 +257,15 @@
         <label for="node-input-thing"><i class="fa fa-gears "></i> Thing</label>
         <input type="text" id="node-input-thing" placeholder="Thing">
     </div>
-    <div class="form-row" id="property-write-row", style="display:none">
-        <label for="node-input-property"><i class="fa fa-info "></i> Property</label>
-        <select id="node-input-property">
+    <div id="property-write-row">
+        <div class="form-row">
+            <label for="node-input-property"><i class="fa fa-info "></i> Property</label>
+            <select id="node-input-property"></select>
+        </div>
+        <div class="form-row">
+            <label for="node-input-uriVariables"><i class="fa fa-gear "></i> uriVariables</label>
+            <input type="text" id="node-input-uriVariables" placeholder='{"foo": "bar"}'>
+        </div>
     </div>
 </script>
 
