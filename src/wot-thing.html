@@ -1,10 +1,40 @@
 <script type="text/javascript">
+
+    function checkBinding(td_str, binding) {
+        try {
+            var td = JSON.parse(td_str);
+        } catch (err) {
+            return false;
+        }
+        const affordances = ["properties", "actions", "events"];
+        for (const affordance of affordances) {
+            if (td[affordance]) {
+                // item is either a property or an action or an event
+                for (const item of Object.values(td[affordance])) {
+                    if (item.forms) {
+                        let check = item.forms.some(form => {
+                            const parsed = new URL(form.href);
+                            if (parsed.protocol !== null) {
+                                // remove trailing ':'
+                                const scheme = parsed.protocol.slice(0, -1);
+                                return (scheme === binding) ? true : false;
+                            }
+                        });
+                        if (check)
+                            return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     RED.nodes.registerType("consumed-thing",{
         category: "config",
         defaults: {
             tdLink: {value: "", required: false},
             td: {value: "", required: false},  //TODO: add validator to make sure that at least one is given
-            http: {value: true},
+            http: {value: false},
             coap: {value: false},
             mqtt: {value: false}
         },
@@ -14,6 +44,25 @@
         oneditprepare: function() { 
             let node = this;
 
+            // Create typed json input from the usual one
+            $("#node-config-input-td").typedInput({
+                type:"json",
+                types:["json"]
+            });
+
+            // Initialize the state of protocol checkboxes
+            node.td = $("#node-config-input-td").typedInput('value');
+            for (const protocol of ["http", "coap", "mqtt"]) {
+                $("#node-config-input-" + protocol).prop("checked", false);
+                $("#node-config-input-" + protocol).prop("disabled", true);
+
+                if (checkBinding(node.td, protocol)) {
+                    $("#node-config-input-" + protocol).prop("checked", true);
+                    $("#node-config-input-" + protocol).prop("disabled", false);
+                }
+            }
+
+            // Fetch TD from URL on button click
             $("#fetch-button").click(function () {
                 let tdLink = $("#node-config-input-tdLink").val()
                 console.log(tdLink)
@@ -23,24 +72,40 @@
                     request.open("GET", tdLink);
                     request.onload = function() {
                         node.td = request.response;
-                        $("#node-config-input-td").val(request.response);
+                        $("#node-config-input-td").typedInput('value', request.response);
+
+                        // Recheck the state of protocol checkboxes
+                        for (const protocol of ["http", "coap", "mqtt"]) {
+
+                            $("#node-config-input-" + protocol).prop("checked", false);
+                            $("#node-config-input-" + protocol).prop("disabled", true);
+
+                            if (checkBinding(node.td, protocol)) {
+                                $("#node-config-input-" + protocol).prop("checked", true);
+                                $("#node-config-input-" + protocol).prop("disabled", false);
+                            }
+                        }
                     }
                     request.send();
                 }
-            })
-        },
-        oneditsave: function () {
-            let node = this;
-            let tdLink = $("#node-config-input-tdLink").val()
+            });
 
-            if (tdLink) {
-                let request = new XMLHttpRequest();
-                request.open("GET", tdLink);
-                request.onload = function() {
-                    node.td = request.response;
+            // Fetch TD from the input field on button click
+            $("#process-button").click(function () {
+                node.td = $("#node-config-input-td").typedInput('value');
+
+                // Recheck the state of protocol checkboxes
+                for (const protocol of ["http", "coap", "mqtt"]) {
+
+                    $("#node-config-input-" + protocol).prop("checked", false);
+                    $("#node-config-input-" + protocol).prop("disabled", true);
+
+                    if (checkBinding(node.td, protocol)) {
+                        $("#node-config-input-" + protocol).prop("checked", true);
+                        $("#node-config-input-" + protocol).prop("disabled", false);
+                    }
                 }
-                request.send();
-            }
+            });
         }
     });
 </script>
@@ -48,7 +113,8 @@
 <script type="text/x-red" data-template-name="consumed-thing">
     <div class="form-row">
         <label for="node-config-input-td"><i class="fa fa-file-text"></i> TD JSON</label>
-        <input type="text" id="node-config-input-td" style="height:200px">
+        <input type="text" id="node-config-input-td" placeholder='{"title":"My-Cool-Thing", ...}' style="width:60%">
+        <button type="button" id="process-button">Process</button>
     </div>
     <div class="form-row">
         <p>Fetch TD from URL:</p>
@@ -62,7 +128,7 @@
         <p>Support the following bindings:</p>
         <div class="form-row">
             <label for="node-config-input-http"> HTTP / HTTPS</label>
-            <input type="checkbox" id="node-config-input-http" checked>
+            <input type="checkbox" id="node-config-input-http">
             <label for="node-config-input-coap"> COAP / COAPS</label>
             <input type="checkbox" id="node-config-input-coap">
             <label for="node-config-input-mqtt"> MQTT</label>
