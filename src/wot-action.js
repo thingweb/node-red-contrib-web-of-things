@@ -18,7 +18,8 @@ module.exports = function(RED) {
                 const uriVariables = (config.uriVariables)? JSON.parse(config.uriVariables) : undefined;
                 consumedThing.invokeAction(config.action, msg.payload, {"uriVariables": uriVariables})
                     .then((resp) => {
-                        if (resp) node.send({payload: resp, topic: config.topic})
+                        const payload = (resp)? resp : "";
+                        node.send({payload: payload, topic: config.topic});
                         node.status({
                             fill:"green",
                             shape:"dot",
