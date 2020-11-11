@@ -39,7 +39,13 @@
             mqtt: {value: false}
         },
         label: function() {
-            return this.name||this.td.title||"consumed-thing";
+            if (this.name) return this.name;
+            try {
+                const td = JSON.parse(this.td);
+                return td.title;
+            } catch (err) {
+                return "consumed-thing";
+            }
         },
         oneditprepare: function() { 
             let node = this;
