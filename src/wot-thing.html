@@ -17,7 +17,7 @@
                             if (parsed.protocol !== null) {
                                 // remove trailing ':'
                                 const scheme = parsed.protocol.slice(0, -1);
-                                return (scheme === binding) ? true : false;
+                                return scheme === binding || scheme === binding + "s";
                             }
                         });
                         if (check)
