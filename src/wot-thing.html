@@ -59,12 +59,19 @@
             // Initialize the state of protocol checkboxes
             node.td = $("#node-config-input-td").typedInput('value');
             for (const protocol of ["http", "coap", "mqtt"]) {
-                $("#node-config-input-" + protocol).prop("checked", false);
-                $("#node-config-input-" + protocol).prop("disabled", true);
+                // No TD means node has not been yet configured
+                if (!node.td) {
+                    // Uncheck and disable everything
+                    $("#node-config-input-" + protocol).prop("checked", false);
+                    $("#node-config-input-" + protocol).prop("disabled", true);
+                } else {
+                    // If node is already configured
+                    // Check the configured protocols
+                    $("#node-config-input-" + protocol).prop("checked", node[protocol]);
 
-                if (checkBinding(node.td, protocol)) {
-                    $("#node-config-input-" + protocol).prop("checked", true);
-                    $("#node-config-input-" + protocol).prop("disabled", false);
+                    // Enable the ones which are contained in the TD
+                    // Node: (disabled, !true) = enabled
+                    $("#node-config-input-" + protocol).prop("disabled", !checkBinding(node.td, protocol));
                 }
             }
 
