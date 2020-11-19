@@ -1,5 +1,9 @@
 <script type="text/javascript">
 
+    // List of supported protocols
+    // Secure ones (like https) are automatically inferred
+    const PROTOCOLS = ["http", "coap", "mqtt", "opcua", "modbus"];
+
     function checkBinding(td_str, binding) {
         try {
             var td = JSON.parse(td_str);
@@ -7,6 +11,10 @@
             return false;
         }
         const affordances = ["properties", "actions", "events"];
+        // In case of OPC UA we look for opc.tcp in href not opcua
+        binding = (binding === "opcua")? "opc.tcp" : binding;
+        // Also different for Modbus
+        binding = (binding === "modbus")? "modbus+tcp" : binding;
         for (const affordance of affordances) {
             if (td[affordance]) {
                 // item is either a property or an action or an event
@@ -36,7 +44,9 @@
             td: {value: "", required: false},  //TODO: add validator to make sure that at least one is given
             http: {value: false},
             coap: {value: false},
-            mqtt: {value: false}
+            mqtt: {value: false},
+            opcua: {value: false},
+            modbus: {value: false}
         },
         label: function() {
             if (this.name) return this.name;
@@ -58,7 +68,7 @@
 
             // Initialize the state of protocol checkboxes
             node.td = $("#node-config-input-td").typedInput('value');
-            for (const protocol of ["http", "coap", "mqtt"]) {
+            for (const protocol of PROTOCOLS) {
                 // No TD means node has not been yet configured
                 if (!node.td) {
                     // Uncheck and disable everything
@@ -88,7 +98,7 @@
                         $("#node-config-input-td").typedInput('value', request.response);
 
                         // Recheck the state of protocol checkboxes
-                        for (const protocol of ["http", "coap", "mqtt"]) {
+                        for (const protocol of PROTOCOLS) {
 
                             $("#node-config-input-" + protocol).prop("checked", false);
                             $("#node-config-input-" + protocol).prop("disabled", true);
@@ -108,7 +118,7 @@
                 node.td = $("#node-config-input-td").typedInput('value');
 
                 // Recheck the state of protocol checkboxes
-                for (const protocol of ["http", "coap", "mqtt"]) {
+                for (const protocol of PROTOCOLS) {
 
                     $("#node-config-input-" + protocol).prop("checked", false);
                     $("#node-config-input-" + protocol).prop("disabled", true);
@@ -146,6 +156,10 @@
             <input type="checkbox" id="node-config-input-coap">
             <label for="node-config-input-mqtt"> MQTT</label>
             <input type="checkbox" id="node-config-input-mqtt">
+            <label for="node-config-input-opcua"> OPC UA</label>
+            <input type="checkbox" id="node-config-input-opcua">
+            <label for="node-config-input-modbus"> Modbus</label>
+            <input type="checkbox" id="node-config-input-modbus">
         </div>
     </div>
 </script>
