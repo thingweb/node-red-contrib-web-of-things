@@ -15,22 +15,37 @@
         binding = (binding === "opcua")? "opc.tcp" : binding;
         // Also different for Modbus
         binding = (binding === "modbus")? "modbus+tcp" : binding;
+
+        // Check base URL if present and then possibly affordances
+        if (td["base"]) {
+            let base = new URL(td["base"]).protocol;
+            if (base) {
+                // remove trailing ':'
+                base = base.slice(0, -1);
+                const checkBase = base === binding || base === binding + "s";
+                if (checkBase) return true;
+            }
+        }
+
         for (const affordance of affordances) {
             if (td[affordance]) {
                 // item is either a property or an action or an event
                 for (const item of Object.values(td[affordance])) {
-                    if (item.forms) {
-                        let check = item.forms.some(form => {
+                    if (!item.forms) return false;
+                    let checkForms = item.forms.some(form => {
+                        try {
                             const parsed = new URL(form.href);
                             if (parsed.protocol !== null) {
                                 // remove trailing ':'
                                 const scheme = parsed.protocol.slice(0, -1);
                                 return scheme === binding || scheme === binding + "s";
                             }
-                        });
-                        if (check)
-                            return true;
-                    }
+                        } catch (e) {
+                            return false;
+                        }
+                    });
+                    if (checkForms)
+                        return true;
                 }
             }
         }
