@@ -27,6 +27,7 @@
   "dependencies": {
     "@node-wot/core": "0.7.3",
     "@node-wot/binding-http": "0.7.3",
+    "@node-wot/binding-websockets": "0.7.3",
     "@node-wot/binding-coap": "0.7.3",
     "@node-wot/binding-mqtt": "0.7.3",
     "@node-wot/binding-opcua": "0.7.3",
