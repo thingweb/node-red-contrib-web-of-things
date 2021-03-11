@@ -2,7 +2,7 @@
 
     // List of supported protocols
     // Secure ones (like https) are automatically inferred
-    const PROTOCOLS = ["http", "coap", "mqtt", "opcua", "modbus"];
+    const PROTOCOLS = ["http", "ws", "coap", "mqtt", "opcua", "modbus"];
 
     function checkBinding(td_str, binding) {
         try {
@@ -58,6 +58,7 @@
             tdLink: {value: "", required: false},
             td: {value: "", required: false},  //TODO: add validator to make sure that at least one is given
             http: {value: false},
+            ws: {value: false},
             coap: {value: false},
             mqtt: {value: false},
             opcua: {value: false},
@@ -167,6 +168,8 @@
         <div class="form-row">
             <label for="node-config-input-http"> HTTP / HTTPS</label>
             <input type="checkbox" id="node-config-input-http">
+            <label for="node-config-input-ws"> WebSocket</label>
+            <input type="checkbox" id="node-config-input-ws">
             <label for="node-config-input-coap"> COAP / COAPS</label>
             <input type="checkbox" id="node-config-input-coap">
             <label for="node-config-input-mqtt"> MQTT</label>
