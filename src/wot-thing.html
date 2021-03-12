@@ -5,16 +5,18 @@
     const PROTOCOLS = ["http", "ws", "coap", "mqtt", "opcua", "modbus"];
 
     function checkBinding(td_str, binding) {
+        let td;
         try {
-            var td = JSON.parse(td_str);
+            td = JSON.parse(td_str);
         } catch (err) {
             return false;
         }
+
         const affordances = ["properties", "actions", "events"];
         // In case of OPC UA we look for opc.tcp in href not opcua
-        binding = (binding === "opcua")? "opc.tcp" : binding;
+        binding = (binding === "opcua") ? "opc.tcp" : binding;
         // Also different for Modbus
-        binding = (binding === "modbus")? "modbus+tcp" : binding;
+        binding = (binding === "modbus") ? "modbus+tcp" : binding;
 
         // Check base URL if present and then possibly affordances
         if (td["base"]) {
@@ -54,14 +56,14 @@
 
     function containsID(td_str) {
         try {
-            let td = JSON.parse(td_str);
+            const td = JSON.parse(td_str);
             return !!td.id;
         } catch (err) {
             return false;
         }
     }
 
-    RED.nodes.registerType("consumed-thing",{
+    RED.nodes.registerType("consumed-thing", {
         category: "config",
         defaults: {
             tdLink: {value: "", required: false},
@@ -76,7 +78,7 @@
             username: {value: ""},
             password: {value: ""},
         },
-        label: function() {
+        label: function () {
             if (this.name) return this.name;
             try {
                 const td = JSON.parse(this.td);
@@ -85,66 +87,77 @@
                 return "consumed-thing";
             }
         },
-        oneditprepare: function() { 
-            let node = this;
+        oneditprepare: function () {
+            const node = this;
 
             // Create typed json input from the usual one
             $("#node-config-input-td").typedInput({
-                type:"json",
-                types:["json"]
+                type: "json",
+                types: ["json"]
             });
 
+            // Store the most used selectors
+            const $basicAuth = $("#node-config-input-basicAuth");
             const $username = $("#username-container");
             const $password = $("#password-container");
-            $username.hide();
-            $password.hide();
 
-            $("#basicAuth-tooltip").tooltip();
+            // Create the basic auth tooltip
+            const $basicAuthTooltip = $("#basicAuth-tooltip");
+            $basicAuthTooltip.tooltip();
 
             // Initialize the state of protocol checkboxes
             node.td = $("#node-config-input-td").typedInput('value');
             for (const protocol of PROTOCOLS) {
-
                 const $protocol = $("#node-config-input-" + protocol);
-                const $basicAuth = $("#node-config-input-basicAuth");
 
                 // No TD means node has not been yet configured
                 if (!node.td) {
                     // Uncheck and disable everything
                     $protocol.prop("checked", false);
                     $protocol.prop("disabled", true);
-
-                    // The same for basic auth
-                    $basicAuth.prop("checked", false);
-                    $basicAuth.prop("disabled", true);
-                    $("#basicAuth-tooltip").prop("title", "TD must contain ID field for authentication");
                 } else {
                     // If node is already configured
                     // Check the configured protocols
                     $protocol.prop("checked", node[protocol]);
 
                     // Enable the ones which are contained in the TD
-                    // Node: (disabled, !true) = enabled
+                    // Note: (disabled, !true) = enabled
                     $protocol.prop("disabled", !checkBinding(node.td, protocol));
-
-                    // Perform the same for basic auth
-
-                    $basicAuth.prop("checked", node.basicAuth);
-                    if ($basicAuth.prop("checked")) {
-                        $username.show();
-                        $password.show();
-                    }
-
-                    $basicAuth.prop("disabled", !containsID(node.td));
-
-                    $("#node-config-input-username").val = node.username;
-                    $("#node-config-input-password").val = node.password;
-
-
                 }
             }
 
-            $("#node-config-input-basicAuth").change(function (event) {
+            // Initialize the state of username and password containers
+            $username.hide();
+            $password.hide();
+
+            // Initialize the state of basic auth
+            // No TD means node has not been yet configured
+            if (!node.td) {
+                // Initial state
+                $basicAuth.prop("checked", false);
+                $basicAuth.prop("disabled", true);
+                $basicAuthTooltip.prop("title", "TD must contain ID field for authentication");
+            } else {
+                // If node is already configured
+                // Recreate the state
+                $basicAuth.prop("checked", node.basicAuth);
+                if ($basicAuth.prop("checked")) {
+                    $username.show();
+                    $password.show();
+                }
+
+                // Note: (disabled, !true) = enabled
+                $basicAuth.prop("disabled", !containsID(node.td));
+                if ($basicAuth.prop("disabled")) {
+                    $basicAuthTooltip.prop("title", "TD must contain ID field for authentication");
+                }
+
+                $("#node-config-input-username").val = node.username;
+                $("#node-config-input-password").val = node.password;
+            }
+
+            // Toggle username and password when basic auth is enabled/disabled
+            $basicAuth.change(function (event) {
                 // Check if event is triggered by user
                 if (event.originalEvent) {
                     $username.toggle();
@@ -159,33 +172,33 @@
                     node.tdLink = tdLink;
                     let request = new XMLHttpRequest();
                     request.open("GET", tdLink);
-                    request.onload = function() {
+                    request.onload = function () {
                         node.td = request.response;
                         $("#node-config-input-td").typedInput('value', request.response);
 
                         // Recheck the state of protocol checkboxes
                         for (const protocol of PROTOCOLS) {
+                            const $protocol = $("#node-config-input-" + protocol);
 
-                            $("#node-config-input-" + protocol).prop("checked", false);
-                            $("#node-config-input-" + protocol).prop("disabled", true);
+                            $protocol.prop("checked", false);
+                            $protocol.prop("disabled", true);
 
                             if (checkBinding(node.td, protocol)) {
-                                $("#node-config-input-" + protocol).prop("checked", true);
-                                $("#node-config-input-" + protocol).prop("disabled", false);
+                                $protocol.prop("checked", true);
+                                $protocol.prop("disabled", false);
                             }
                         }
 
                         // Check availability for basic authentication
-                        const $basicAuth = $("#node-config-input-basicAuth");
                         $basicAuth.prop("checked", false);
                         if (!containsID(node.td)) {
                             $basicAuth.prop("disabled", true);
-                            $("#basicAuth-tooltip").prop("title", "TD must contain ID field for authentication");
+                            $basicAuthTooltip.prop("title", "TD must contain ID field for authentication");
                             $username.hide();
                             $password.hide();
                         } else {
                             $basicAuth.prop("disabled", false);
-                            $("#basicAuth-tooltip").prop("title", "");
+                            $basicAuthTooltip.prop("title", "");
                         }
                     }
                     request.send();
@@ -198,27 +211,27 @@
 
                 // Recheck the state of protocol checkboxes
                 for (const protocol of PROTOCOLS) {
+                    const $protocol = $("#node-config-input-" + protocol);
 
-                    $("#node-config-input-" + protocol).prop("checked", false);
-                    $("#node-config-input-" + protocol).prop("disabled", true);
+                    $protocol.prop("checked", false);
+                    $protocol.prop("disabled", true);
 
                     if (checkBinding(node.td, protocol)) {
-                        $("#node-config-input-" + protocol).prop("checked", true);
-                        $("#node-config-input-" + protocol).prop("disabled", false);
+                        $protocol.prop("checked", true);
+                        $protocol.prop("disabled", false);
                     }
                 }
 
                 // Check availability for basic authentication
-                const $basicAuth = $("#node-config-input-basicAuth");
                 $basicAuth.prop("checked", false);
                 if (!containsID(node.td)) {
                     $basicAuth.prop("disabled", true);
-                    $("#basicAuth-tooltip").prop("title", "TD must contain ID field for authentication");
+                    $basicAuthTooltip.prop("title", "TD must contain ID field for authentication");
                     $username.hide();
                     $password.hide();
                 } else {
                     $basicAuth.prop("disabled", false);
-                    $("#basicAuth-tooltip").prop("title", "");
+                    $basicAuthTooltip.prop("title", "");
                 }
 
             });
@@ -270,8 +283,10 @@
         <label for="node-config-input-password"><i class="fa fa-lock"></i> Password</label>
         <input type="password" id="node-config-input-password" style="width:60%">
     </div>
+
+
 </script>
 
-// TODO: 
-    - Validate TD
-    - Move to JS editor
+<!--TODO:-->
+<!-- - Validate TD-->
+<!-- - Move to JS editor-->
