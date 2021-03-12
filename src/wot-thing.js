@@ -15,10 +15,14 @@ module.exports = function(RED) {
         RED.nodes.createNode(this, config);
 
         this.tdLink = config.tdLink;
-        this.td = config.td;
+        this.td = JSON.parse(config.td);
 
         this.consumedThing = new Promise((resolve, reject) => {
             let servient = new Servient();
+
+            if (config.basicAuth) {
+                servient.addCredentials({[this.td.id]: {username: config.username.trim(), password: config.password}});
+            }
 
             if (config.http) {
                 servient.addClientFactory(new HttpClientFactory());
@@ -42,7 +46,7 @@ module.exports = function(RED) {
             }
 
             servient.start().then((thingFactory) => {
-                let consumedThing = thingFactory.consume(JSON.parse(this.td));
+                let consumedThing = thingFactory.consume(this.td);
                 resolve(consumedThing);
             })
         })

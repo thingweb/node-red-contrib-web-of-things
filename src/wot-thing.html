@@ -52,6 +52,15 @@
         return false;
     }
 
+    function containsID(td_str) {
+        try {
+            let td = JSON.parse(td_str);
+            return !!td.id;
+        } catch (err) {
+            return false;
+        }
+    }
+
     RED.nodes.registerType("consumed-thing",{
         category: "config",
         defaults: {
@@ -62,7 +71,10 @@
             coap: {value: false},
             mqtt: {value: false},
             opcua: {value: false},
-            modbus: {value: false}
+            modbus: {value: false},
+            basicAuth: {value: false},
+            username: {value: ""},
+            password: {value: ""},
         },
         label: function() {
             if (this.name) return this.name;
@@ -82,29 +94,67 @@
                 types:["json"]
             });
 
+            const $username = $("#username-container");
+            const $password = $("#password-container");
+            $username.hide();
+            $password.hide();
+
+            $("#basicAuth-tooltip").tooltip();
+
             // Initialize the state of protocol checkboxes
             node.td = $("#node-config-input-td").typedInput('value');
             for (const protocol of PROTOCOLS) {
+
+                const $protocol = $("#node-config-input-" + protocol);
+                const $basicAuth = $("#node-config-input-basicAuth");
+
                 // No TD means node has not been yet configured
                 if (!node.td) {
                     // Uncheck and disable everything
-                    $("#node-config-input-" + protocol).prop("checked", false);
-                    $("#node-config-input-" + protocol).prop("disabled", true);
+                    $protocol.prop("checked", false);
+                    $protocol.prop("disabled", true);
+
+                    // The same for basic auth
+                    $basicAuth.prop("checked", false);
+                    $basicAuth.prop("disabled", true);
+                    $("#basicAuth-tooltip").prop("title", "TD must contain ID field for authentication");
                 } else {
                     // If node is already configured
                     // Check the configured protocols
-                    $("#node-config-input-" + protocol).prop("checked", node[protocol]);
+                    $protocol.prop("checked", node[protocol]);
 
                     // Enable the ones which are contained in the TD
                     // Node: (disabled, !true) = enabled
-                    $("#node-config-input-" + protocol).prop("disabled", !checkBinding(node.td, protocol));
+                    $protocol.prop("disabled", !checkBinding(node.td, protocol));
+
+                    // Perform the same for basic auth
+
+                    $basicAuth.prop("checked", node.basicAuth);
+                    if ($basicAuth.prop("checked")) {
+                        $username.show();
+                        $password.show();
+                    }
+
+                    $basicAuth.prop("disabled", !containsID(node.td));
+
+                    $("#node-config-input-username").val = node.username;
+                    $("#node-config-input-password").val = node.password;
+
+
                 }
             }
 
+            $("#node-config-input-basicAuth").change(function (event) {
+                // Check if event is triggered by user
+                if (event.originalEvent) {
+                    $username.toggle();
+                    $password.toggle();
+                }
+            });
+
             // Fetch TD from URL on button click
             $("#fetch-button").click(function () {
-                let tdLink = $("#node-config-input-tdLink").val()
-                console.log(tdLink)
+                const tdLink = $("#node-config-input-tdLink").val();
                 if (tdLink) {
                     node.tdLink = tdLink;
                     let request = new XMLHttpRequest();
@@ -123,6 +173,19 @@
                                 $("#node-config-input-" + protocol).prop("checked", true);
                                 $("#node-config-input-" + protocol).prop("disabled", false);
                             }
+                        }
+
+                        // Check availability for basic authentication
+                        const $basicAuth = $("#node-config-input-basicAuth");
+                        $basicAuth.prop("checked", false);
+                        if (!containsID(node.td)) {
+                            $basicAuth.prop("disabled", true);
+                            $("#basicAuth-tooltip").prop("title", "TD must contain ID field for authentication");
+                            $username.hide();
+                            $password.hide();
+                        } else {
+                            $basicAuth.prop("disabled", false);
+                            $("#basicAuth-tooltip").prop("title", "");
                         }
                     }
                     request.send();
@@ -144,6 +207,20 @@
                         $("#node-config-input-" + protocol).prop("disabled", false);
                     }
                 }
+
+                // Check availability for basic authentication
+                const $basicAuth = $("#node-config-input-basicAuth");
+                $basicAuth.prop("checked", false);
+                if (!containsID(node.td)) {
+                    $basicAuth.prop("disabled", true);
+                    $("#basicAuth-tooltip").prop("title", "TD must contain ID field for authentication");
+                    $username.hide();
+                    $password.hide();
+                } else {
+                    $basicAuth.prop("disabled", false);
+                    $("#basicAuth-tooltip").prop("title", "");
+                }
+
             });
         }
     });
@@ -163,22 +240,35 @@
         <input type="url" id="node-config-input-tdLink" style="width:60%">
         <button type="button" id="fetch-button">Fetch</button>
     </div>
-    <div>
-        <p>Support the following bindings:</p>
-        <div class="form-row">
-            <label for="node-config-input-http"> HTTP / HTTPS</label>
-            <input type="checkbox" id="node-config-input-http">
-            <label for="node-config-input-ws"> WebSocket</label>
-            <input type="checkbox" id="node-config-input-ws">
-            <label for="node-config-input-coap"> COAP / COAPS</label>
-            <input type="checkbox" id="node-config-input-coap">
-            <label for="node-config-input-mqtt"> MQTT</label>
-            <input type="checkbox" id="node-config-input-mqtt">
-            <label for="node-config-input-opcua"> OPC UA</label>
-            <input type="checkbox" id="node-config-input-opcua">
-            <label for="node-config-input-modbus"> Modbus</label>
-            <input type="checkbox" id="node-config-input-modbus">
-        </div>
+
+    <p>Support the following bindings:</p>
+    <div class="form-row">
+        <label for="node-config-input-http"> HTTP / HTTPS</label>
+        <input type="checkbox" id="node-config-input-http">
+        <label for="node-config-input-ws"> WebSocket</label>
+        <input type="checkbox" id="node-config-input-ws">
+        <label for="node-config-input-coap"> COAP / COAPS</label>
+        <input type="checkbox" id="node-config-input-coap">
+        <label for="node-config-input-mqtt"> MQTT</label>
+        <input type="checkbox" id="node-config-input-mqtt">
+        <label for="node-config-input-opcua"> OPC UA</label>
+        <input type="checkbox" id="node-config-input-opcua">
+        <label for="node-config-input-modbus"> Modbus</label>
+        <input type="checkbox" id="node-config-input-modbus">
+    </div>
+
+    <p>Security:</p>
+    <div class="form-row">
+        <label for="node-config-input-basicAuth">Use basic authentication</label>
+        <span id="basicAuth-tooltip"><input type="checkbox" id="node-config-input-basicAuth"></span>
+    </div>
+    <div class="form-row" id="username-container">
+            <label for="node-config-input-username"><i class="fa fa-user"></i> Username</label>
+            <input type="text" id="node-config-input-username" style="width:60%">
+    </div>
+    <div class="form-row" id="password-container">
+        <label for="node-config-input-password"><i class="fa fa-lock"></i> Password</label>
+        <input type="password" id="node-config-input-password" style="width:60%">
     </div>
 </script>
 
