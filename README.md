@@ -42,7 +42,7 @@ Or you can leave them all as they are.
 Anyway, this can be changed at any time.
 
 If a Thing needs basic authentication (i.e. using username and password) for any of its interaction affordances, you can enable that in the respective checkbox.
-**Note:** Only basic type of authentication is currently supported.
+**Note:** Only basic type of authentication is currently supported by this package.
 If you enable security, the nodes will automatically infer whether to use authentication for this particular affordance or not based on the provided Thing Description.
 
 Finally, click on the red "Add" button on the top right corner.
