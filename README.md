@@ -3,7 +3,7 @@
 A [Node-RED](https://nodered.org/) package of nodes for the [Web of Things](https://www.w3.org/WoT/).
 
 Can be installed from the Node-RED palette manager directly or via npm (see [the npm package](https://www.npmjs.com/package/node-red-contrib-web-of-things)).
-The package provides nodes that can communicate with any HTTP/HTTPS, CoAP/CoAPS, MQTT, OPC UA and Modbus device based on its [W3C WoT Thing Description](https://www.w3.org/TR/wot-thing-description/).
+The package provides nodes that can communicate with any HTTP/HTTPS, WebSocket, CoAP/CoAPS, MQTT, OPC UA and Modbus device based on its [W3C WoT Thing Description](https://www.w3.org/TR/wot-thing-description/).
 
 The package is build upon [node-wot](https://github.com/eclipse/thingweb.node-wot) runtime environment.
 
@@ -41,9 +41,13 @@ Now you can leave only the bindings you need, and disable the others.
 Or you can leave them all as they are.
 Anyway, this can be changed at any time.
 
-Finally, click on red "Add" button on top right corner.
+If a Thing needs basic authentication (i.e. using username and password) for any of its interaction affordances, you can enable that in the respective checkbox.
+**Note:** Only basic type of authentication is currently supported by this package.
+If you enable security, the nodes will automatically infer whether to use authentication for this particular affordance or not based on the provided Thing Description.
 
-Now, for all WoT nodes you add to a flow, you will see all the possible interaction affordances populated from the Thing Description.
+Finally, click on the red "Add" button on the top right corner.
+
+Now, for all WoT nodes you add to a flow, you will see all the respective interaction affordances populated from the Thing Description.
 
 You can also add more Things and choose a particular one for any node you add.
 
