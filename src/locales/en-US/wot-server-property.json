@@ -1,0 +1,24 @@
+{
+    "editor": {
+        "nameLabel": "Name",
+        "configLabel": "thing config",
+        "paletteLabel": "WoT Property",
+        "inParams": {
+            "tabLabel":"Input",
+            "propertyName":{
+                "label":"Property Name",
+                "description":"Property Name Description.",
+                "placeholder":"Property Name"
+            }
+        },
+        "outParams1": {
+            "tabLabel":"Output",
+            "outputLabel":"Output",
+            "output1":{
+                "label":"Output Parameter1",
+                "description":"Output Parameter1 description.",
+                "placeholder":"Output Parameter1"
+            }
+        }
+    }
+}

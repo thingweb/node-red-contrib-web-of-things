@@ -1,0 +1,31 @@
+{
+    "editor": {
+        "nameLabel": "名前",
+        "propertyNameLabel": "プロパティ名",
+        "propertyDataTypeLabel": "データ型",
+        "propertyReadOnlyFlagLabel": "読み込みのみ",
+        "propertyObservableFlagLabel": "観測可能",
+        "configLabel": "Thing設定",
+        "paletteLabel": "Server-Property",
+        "inParams": {
+            "tabLabel":"入力",
+            "propertyValue":{
+                "label":"プロパティ値",
+                "description":"プロパティ値。",
+                "placeholder":"プロパティ値"
+            }
+        },
+        "outParams1": {
+            "outputLabel":"読み込み要求"
+        },
+        "outParams2": {
+            "tabLabel":"書き込み要求",
+            "outputLabel":"書き込み要求",
+            "writingValue":{
+                "label":"書き込む値",
+                "description":"プロパティに書き込む値。",
+                "placeholder":"プロパティに書き込む値"
+            }
+        }
+    }
+}

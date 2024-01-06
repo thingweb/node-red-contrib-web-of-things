@@ -1,0 +1,7 @@
+{
+    "editor": {
+        "nameLabel": "Thing名",
+        "bindingTypeLabel": "Binding種別",
+        "configLabel": "Thing設定"
+    }
+}

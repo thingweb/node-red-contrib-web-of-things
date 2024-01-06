@@ -1,0 +1,190 @@
+<script type="text/javascript">
+    (() => {
+
+        RED.nodes.registerType('wot-server-end', {
+            category: "Web of Things",
+            color: "#d7d7a0",
+            defaults: {
+                name: {value:""},
+                inParams_propertyNameType: {
+                    value: "str"
+                },
+                inParams_propertyNameConstValue: {
+                    value: "payload"
+                },
+                outParams1_output1Type: {
+                    value: "msg"
+                },
+                outParams1_output1ConstValue: {
+                    value: "payload1_1"
+                }
+            },
+            credentials: {
+                inParams_propertyName: {type: "text"},
+            },
+            inputs:1,
+            outputs:0,
+            outputLabels: function(index) {
+                return [
+                    this._("editor.outParams1.outputLabel")
+                ][index]
+            },
+            icon: "arrow.png",
+            label: function() {
+                return this.name||this._("editor.paletteLabel")||"wot-server-end";
+            },
+            labelStyle: function() {
+                return this.name?"node_label_italic":"";
+            },
+            paletteLabel: function() {
+                return this._("editor.paletteLabel") || "node";
+            },
+            onpaletteadd: function() {
+            },
+            oneditprepare: function() {
+                console.log("node oneditprepare")
+                // Tab
+                const tabs = RED.tabs.create({
+                        id: 'red-tabs',
+                        onchange(tab) {
+                            $('#tabs-content').children().hide();
+                            $("#" + tab.id).show();
+                            $("#red-tabs").resize();
+                        },
+                    });
+                tabs.addTab({
+                    id: 'tab-thingConfig-settings',
+                    label: this._('editor.thingConfig.tabLabel'),
+                });
+
+                tabs.addTab({
+                    id: 'tab-inParams-settings',
+                    label: this._('editor.inParams.tabLabel'),
+                });
+
+                // 入力パラメータの指定項目作成
+                prepareInOutParamSetting("inParams", {
+                    name:"propertyName",
+                    types: ["msg","str","num","env"],
+                    defaultType: "str",
+                    defaultValue: "payload",
+                    required: true
+                }, this)
+                
+                tabs.addTab({
+                    id: 'tab-outParams1-settings',
+                    label: this._('editor.outParams1.tabLabel'),
+                });
+                // 出力パラメータの指定項目作成
+                prepareInOutParamSetting("outParams1", {
+                    name: "output1",
+                    types: ["msg","flow"],
+                    defaultType: "msg",
+                    defaultValue: "payload1_1",
+                    required: true
+                }, this)
+            },
+            oneditsave: function() {
+                saveInOutParamSetting("inParams", {
+                    name:"propertyName",
+                    types: ["msg","str","num","env"],
+                    defaultType: "str",
+                    defaultValue: "payload",
+                    required: true
+                }, this)
+                saveInOutParamSetting("outParams1", {
+                    name: "output1",
+                    types: ["msg","flow"],
+                    defaultType: "msg",
+                    defaultValue: "payload1_1",
+                    required: true
+                }, this)
+            }
+        });
+        const prepareInOutParamSetting = (inOrOutParams, params, _this) => {
+            const {name, types, defaultType, defaultValue, required} = params
+            const varName = `${inOrOutParams}_${name}`
+            if (!_this[`${varName}Type`]) {
+                _this[`${varName}Type`] = defaultType
+            }
+            if(this[`${varName}Type`] == 'str') {
+                $(`#node-input-${varName}ConstValue`).val("")
+            } else {
+                if(_this[`${varName}ConstValue`] == "") {
+                    $(`#node-input-${varName}ConstValue`).val(_this.credentials[varName]);
+                } else {
+                    _this.credentials[varName] = _this[`${varName}ConstValue`];
+                    $(`#node-input-${varName}`).val(_this.credentials[`${varName}`]);
+                }
+            }
+            $(`#node-input-${varName}Type`).val(_this[`${varName}Type`])
+            $(`#node-input-${varName}`).typedInput({
+                default: defaultType,
+                typeField: $(`#node-input-${varName}Type`),
+                types: types
+            })
+            $(`#node-input-${varName}`).typedInput('type', _this[`${varName}Type`])
+        }
+        const saveInOutParamSetting = (inOrOutParams, params, _this) => {
+            const varName = `${inOrOutParams}_${params.name}`
+            if($(`#node-input-${varName}Type`).val() != 'str') {
+                _this[`${varName}ConstValue`] = $(`#node-input-${varName}`).val()
+                $(`#node-input-${varName}ConstValue`).val(_this[`${varName}ConstValue`])
+            } else {
+                $(`#node-input-${varName}ConstValue`).val("")
+                _this[`${varName}ConstValue`] = ''
+            }
+        }
+    })();
+
+</script>
+
+<!-- ノード編集画面テンプレート -->
+<script type="text/html" data-template-name="wot-server-end">
+
+	<div class="form-row">
+		<label for="node-input-name"><span data-i18n="editor.nameLabel"></span></label>
+		<input type="text" id="node-input-name" data-i18n="[placeholder]editor.nameLabel">
+	</div>
+
+    <!-- Tab -->
+    <div class="form-row">
+        <ul style="min-width: 500px; margin-bottom: 20px;" id="red-tabs">
+        </ul>
+    </div>
+    <!-- Tab contents -->
+    <div id="tabs-content" style="min-height:250px;">
+        <!-- Thing設定指定 -->
+        <div id="tab-thingConfig-settings">
+            <div class='form-row'>
+                <label for='node-input-thingConfig_thingName'><span data-i18n="editor.thingConfig.thingName.label"></span></label>
+                <input required type='text' id='node-input-thingConfig_thingName' data-i18n="[placeholder]editor.thingConfig.thingName.placeholder">
+                <input type='hidden' id='node-input-thingConfig_thingNameType'>
+                <input type='hidden' id='node-input-thingConfig_thingNameConstValue'>
+            </div>
+        </div>
+
+        <!-- 入力パラメータ指定 -->
+        <div id="tab-inParams-settings">
+            <div class='form-row'>
+                <label for='node-input-inParams_propertyName'><span data-i18n="editor.inParams.propertyName.label"></span></label>
+                <input required type='text' id='node-input-inParams_propertyName' data-i18n="[placeholder]editor.inParams.propertyName.placeholder">
+                <input type='hidden' id='node-input-inParams_propertyNameType'>
+                <input type='hidden' id='node-input-inParams_propertyNameConstValue'>
+            </div>
+        </div>
+        <!-- 出力パラメータ指定 -->
+        <div id="tab-outParams1-settings">
+            <div class='form-row'>
+                <label for='node-input-outParams1_output1'><span data-i18n="editor.outParams1.output1.label"></span></label>
+                <input required type='text' id='node-input-outParams1_output1' data-i18n="[placeholder]editor.outParams1.output1.placeholder">
+                <input type='hidden' id='node-input-outParams1_output1Type'>
+                <input type='hidden' id='node-input-outParams1_output1ConstValue'>
+            </div>
+        </div>
+    </div>
+
+</script>
+
+<style>
+</style>
