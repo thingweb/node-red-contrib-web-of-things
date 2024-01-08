@@ -8,11 +8,11 @@
         "configLabel": "Thing設定",
         "paletteLabel": "Server-Property",
         "inParams": {
-            "tabLabel":"入力",
-            "propertyValue":{
-                "label":"プロパティ値",
-                "description":"プロパティ値。",
-                "placeholder":"プロパティ値"
+            "tabLabel":"変更された値の入力",
+            "changedValue":{
+                "label":"変更された値",
+                "description":"変更されたプロパティ値。",
+                "placeholder":"変更されたプロパティ値"
             }
         },
         "outParams1": {

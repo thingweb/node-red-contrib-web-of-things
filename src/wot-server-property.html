@@ -10,10 +10,10 @@
                 propertyDataType: {value:"string"},
                 propertyReadOnlyFlag: {value:true},
                 propertyObservableFlag: {value:true},
-                inParams_propertyValueType: {
+                inParams_changedValueType: {
                     value: "msg"
                 },
-                inParams_propertyValueConstValue: {
+                inParams_changedValueConstValue: {
                     value: "payload"
                 },
                 outParams2_writingValueType: {
@@ -28,10 +28,10 @@
                 }
             },
             credentials: {
-                inParams_propertyValue: {type: "text"},
+                inParams_changedValue: {type: "text"},
                 outParams2_writingValue: {type: "text"},
             },
-            inputs:0,
+            inputs:1,
             outputs:2,
             outputLabels: function(index) {
                 return [
@@ -69,7 +69,7 @@
 
                 // 入力パラメータの指定項目作成
                 prepareInOutParamSetting("inParams", {
-                    name:"propertyValue",
+                    name:"changedValue",
                     types: ["msg","str","num","env"],
                     defaultType: "msg",
                     defaultValue: "payload",
@@ -91,7 +91,7 @@
             },
             oneditsave: function() {
                 saveInOutParamSetting("inParams", {
-                    name:"propertyValue",
+                    name:"changedValue",
                     types: ["msg","str","num","env"],
                     defaultType: "msg",
                     defaultValue: "payload",
@@ -191,10 +191,10 @@
         <!-- 入力パラメータ指定 -->
         <div id="tab-inParams-settings">
             <div class='form-row'>
-                <label for='node-input-inParams_propertyValue'><span data-i18n="editor.inParams.propertyValue.label"></span></label>
-                <input required type='text' id='node-input-inParams_propertyValue' data-i18n="[placeholder]editor.inParams.propertyValue.placeholder">
-                <input type='hidden' id='node-input-inParams_propertyValueType'>
-                <input type='hidden' id='node-input-inParams_propertyValueConstValue'>
+                <label for='node-input-inParams_changedValue'><span data-i18n="editor.inParams.changedValue.label"></span></label>
+                <input required type='text' id='node-input-inParams_changedValue' data-i18n="[placeholder]editor.inParams.changedValue.placeholder">
+                <input type='hidden' id='node-input-inParams_changedValueType'>
+                <input type='hidden' id='node-input-inParams_changedValueConstValue'>
             </div>
         </div>
         <!-- 出力パラメータ指定 -->

@@ -7,8 +7,13 @@ export interface ServientWrapper {
   // Servientを作成できるか確認する
   isConflict(type: string, params: any): boolean
   addUserNode(node: any): void
-  startServient(title: string, description: string, userNodeIds: string[]): void
-  endServient(): void
+  startServient(
+    title: string,
+    description: string,
+    userNodeIds: string[]
+  ): Promise<boolean>
+  endServient(): Promise<void>
+  emitPropertyChange(propertyName: string): Promise<void>
 }
 
 // servientのインスタンスを管理する

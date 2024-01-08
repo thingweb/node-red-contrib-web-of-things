@@ -48,32 +48,43 @@ module.exports = function (RED) {
       console.log('*** servientWrapper', woTServerConfig.servientWrapper)
 
       // 入力パラメータを取得
-      node.inParams_propertyName = node.credentials.inParams_propertyName
+      /*node.inParams_changedValue = node.credentials.inParams_changedValue
       if (
-        config.inParams_propertyNameConstValue &&
-        config.inParams_propertyNameType
+        config.inParams_changedValueConstValue &&
+        config.inParams_changedValueType
       ) {
-        node.inParams_propertyName = RED.util.evaluateNodeProperty(
-          config.inParams_propertyNameConstValue,
-          config.inParams_propertyNameType,
+        node.inParams_changedValue = RED.util.evaluateNodeProperty(
+          config.inParams_changedValueConstValue,
+          config.inParams_changedValueType,
           node,
           msg
         )
       }
-      console.log('node.inParams_propertyName:', node.inParams_propertyName)
+      console.log('node.inParams_changedValue:', node.inParams_changedValue)*/
+      console.log(
+        '*** woTServerConfig.emitPropertyChange:',
+        config.propertyName
+      )
+      const servientWrapper = ServientManager.getInstance().getServientWrapper(
+        woTServerConfig.id
+      )
+      await servientWrapper.emitPropertyChange(config.propertyName)
+      console.log('*** woTServerConfig.emitPropertyChange finished')
 
       // 出力の作成
       // 出力の出力を返す場合
-      setOutput(
-        config.outParams1_output1Type,
-        config.outParams1_output1ConstValue,
+      /*setOutput(
+        config.outParams2_wriitingValueType,
+        config.outParams2_wriitingValueConstValue,
         msg,
         this.context(),
-        '[value of outParams1_output1]'
+        '[value of outParams1_wriitingValue]'
       )
       // ここまで
 
-      send(msg)
+      send(msg)*/
+
+      // 変更されたプロパティ値を入力された場合は出力なし
       done()
     })
     // closeイベント

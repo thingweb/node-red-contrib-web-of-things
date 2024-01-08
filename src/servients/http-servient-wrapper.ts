@@ -188,7 +188,7 @@ export default class HttpServientWrapper implements ServientWrapper {
         console.warn('timeout happend while servient ending.')
         this.started = false
         resolve()
-      }, 1000) // 1秒経っても終わらなければ終了扱いとする
+      }, 3000) // 3秒経っても終わらなければ終了扱いとする
       if (this.server && this.thing) {
         console.log('*** call server.destroy')
         await this.server.destroy(this.thing.id)
@@ -203,6 +203,12 @@ export default class HttpServientWrapper implements ServientWrapper {
       resolve()
     })
   }
+
+  // プロパティ変更を通知
+  public async emitPropertyChange(propertyName: string) {
+    await this.thing.emitPropertyChange(propertyName)
+  }
+
   // 新規に作成するConfigノードが競合するか調べる
   public isConflict(): boolean {
     throw new Error('Method not implemented.')
