@@ -6,14 +6,17 @@ import HttpServientWrapper from './http-servient-wrapper'
 export interface ServientWrapper {
   // Servientを作成できるか確認する
   isConflict(type: string, params: any): boolean
-  addUserNode(node: any): void
-  startServient(
-    title: string,
-    description: string,
-    userNodeIds: string[]
-  ): Promise<boolean>
+  //addUserNode(node: any): void
+  createThing(td: any): Promise<any>
+  exposeThing(): Promise<void>
+  getThing(): any
+  // startServient(
+  //   title: string,
+  //   description: string,
+  //   userNodeIds: string[]
+  // ): Promise<boolean>
   endServient(): Promise<void>
-  emitPropertyChange(propertyName: string): Promise<void>
+  //emitPropertyChange(propertyName: string): Promise<void>
 }
 
 // servientのインスタンスを管理する
@@ -49,12 +52,18 @@ export default class ServientManager {
     }
     return this.servientWrappers[id]
   }
-  public getServientWrapper(id: string): ServientWrapper {
-    console.log('*** getServientWrapper', id)
-    console.log('*** this.servientWrappers', this.servientWrappers)
-    return this.servientWrappers[id]
+  public existServienetWrapper(id: string) {
+    if (this.servientWrappers[id]) {
+      return true
+    }
+    return false
   }
-  public canCreateServient(type: string, params: any) {
+  // public getServientWrapper(id: string): ServientWrapper {
+  //   console.log('*** getServientWrapper', id)
+  //   console.log('*** this.servientWrappers', this.servientWrappers)
+  //   return this.servientWrappers[id]
+  // }
+  private canCreateServient(type: string, params: any) {
     console.log(
       '*** canCreateServient this.servientWrappers',
       this.servientWrappers
@@ -66,8 +75,31 @@ export default class ServientManager {
     }
     return true
   }
-  public removeServientWrapper(id: string) {
+  public async removeServientWrapper(id: string) {
     console.log('*** removeServientWrapper')
+    this.endServient(id)
     delete this.servientWrappers[id]
+  }
+
+  private async endServient(id: string) {
+    return new Promise<void>(async (resolve, reject) => {
+      console.log('*** call endServient')
+      const servientWrapper = this.servientWrappers[id]
+      const timeoutId = setTimeout(() => {
+        console.warn('timeout happend while servient ending.')
+        delete this.servientWrappers[id]
+        resolve()
+      }, 3000) // 3秒経っても終わらなければ終了扱いとする
+      servientWrapper.endServient()
+      console.log('*** servient finished')
+      delete this.servientWrappers[id]
+      clearTimeout(timeoutId)
+      resolve()
+    })
+  }
+
+  public getThing(id: string) {
+    const servientWrapper = this.servientWrappers[id]
+    return servientWrapper?.getThing()
   }
 }

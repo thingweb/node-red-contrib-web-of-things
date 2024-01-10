@@ -5,28 +5,17 @@ module.exports = function (RED) {
   function WoTServerProperty(config) {
     RED.nodes.createNode(this, config)
     const node = this
+    this.status({ fill: 'red', shape: 'dot', text: 'not prepared' })
     console.log('*** this', this)
     console.log('*** config', config)
     const woTServerConfig = RED.nodes.getNode(config.woTServerConfig) //test
     //console.log('*** RED', RED)
     //console.log('*** RED.nodes', RED.nodes)
-    //console.log('*** servientWrapper', woTServerConfig.servientWrapper)
-    function addNodeToServientWrapper() {
-      const servientWrapper = ServientManager.getInstance().getServientWrapper(
-        woTServerConfig.id
-      )
-      if (servientWrapper) {
-        servientWrapper.addUserNode(node)
-      } else {
-        console.log('*** waiting to prepare servient')
-        setTimeout(() => {
-          addNodeToServientWrapper()
-        }, 100)
-      }
-    }
-    addNodeToServientWrapper()
+    woTServerConfig?.addUserNode(node)
+    console.log('*** addUserNode finished.', node.id)
+    this.status({ fill: 'green', shape: 'dot', text: 'running' })
 
-    // WoTServerConfigノードからプロパティを取得する
+    // WoTServerConfigノードからプロパティを取得する際に呼び出す
     node.getProps = () => {
       return {
         attrType: 'properties',
@@ -65,10 +54,9 @@ module.exports = function (RED) {
         '*** woTServerConfig.emitPropertyChange:',
         config.propertyName
       )
-      const servientWrapper = ServientManager.getInstance().getServientWrapper(
-        woTServerConfig.id
-      )
-      await servientWrapper.emitPropertyChange(config.propertyName)
+      await ServientManager.getInstance()
+        .getThing(woTServerConfig.id)
+        .emitPropertyChange(config.propertyName)
       console.log('*** woTServerConfig.emitPropertyChange finished')
 
       // 出力の作成
