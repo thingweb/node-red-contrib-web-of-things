@@ -7,14 +7,6 @@
         "propertyObservableFlagLabel": "観測可能",
         "configLabel": "Thing設定",
         "paletteLabel": "Server-Property",
-        "inParams": {
-            "tabLabel":"変更された値の入力",
-            "changedValue":{
-                "label":"変更された値",
-                "description":"変更されたプロパティ値。",
-                "placeholder":"変更されたプロパティ値"
-            }
-        },
         "outParams1": {
             "outputLabel":"読み込み要求"
         },
@@ -22,9 +14,9 @@
             "tabLabel":"書き込み要求",
             "outputLabel":"書き込み要求",
             "writingValue":{
-                "label":"書き込む値",
-                "description":"プロパティに書き込む値。",
-                "placeholder":"プロパティに書き込む値"
+                "label":"書き込む値の格納元",
+                "description":"プロパティに書き込む値の格納元。",
+                "placeholder":"プロパティに書き込む値の格納元"
             }
         }
     }

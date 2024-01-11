@@ -2,7 +2,7 @@
 import ServientManager from './servients/servient-manager'
 
 module.exports = function (RED) {
-  function WoTServerProperty(config) {
+  function WoTServerEvent(config) {
     RED.nodes.createNode(this, config)
     const node = this
     this.status({ fill: 'red', shape: 'dot', text: 'not prepared' })
@@ -15,17 +15,15 @@ module.exports = function (RED) {
     console.log('*** addUserNode finished.', node.id)
     this.status({ fill: 'green', shape: 'dot', text: 'running' })
 
-    // WoTServerConfigノードからプロパティの定義を取得する際に呼び出す
+    // WoTServerConfigノードからイベントの定義を取得する際に呼び出す
     node.getProps = () => {
       return {
-        attrType: 'properties',
-        name: config.propertyName,
-        outputAttr: config.outParams2_writingValueConstValue,
+        attrType: 'events',
+        name: config.eventName,
+        outputAttr: config.inParams_eventValueConstValue,
         content: {
-          description: config.propertyDescription,
-          type: config.propertyDataType,
-          readOnly: config.propertyReadOnlyFlag,
-          observable: config.propertyObservableFlag
+          description: config.eventDescription,
+          data: { type: config.eventDataType }
         }
       }
     }
@@ -36,16 +34,26 @@ module.exports = function (RED) {
       const woTServerConfig = RED.nodes.getNode(config.woTServerConfig)
       console.log('*** servientWrapper', woTServerConfig.servientWrapper)
 
-      console.log(
-        '*** woTServerConfig.emitPropertyChange:',
-        config.propertyName
-      )
+      // 入力パラメータを取得
+      node.inParams_eventValue = node.credentials.inParams_eventValue
+      if (
+        config.inParams_eventValueConstValue &&
+        config.inParams_eventValueType
+      ) {
+        node.inParams_eventValue = RED.util.evaluateNodeProperty(
+          config.inParams_eventValueConstValue,
+          config.inParams_eventValueType,
+          node,
+          msg
+        )
+      }
+      console.log('node.inParams_eventValue:', node.inParams_eventValue)
       await ServientManager.getInstance()
         .getThing(woTServerConfig.id)
-        .emitPropertyChange(config.propertyName)
-      console.log('*** emitPropertyChange finished', config.propertyName)
+        .emitEvent(config.eventName, node.inParams_eventValue)
+      console.log('*** emitEvent finished')
 
-      // 変更されたプロパティ値を入力された場合は出力なし
+      // イベント通知の場合は出力なし
       done()
     })
     // closeイベント
@@ -59,7 +67,7 @@ module.exports = function (RED) {
       done()
     })
   }
-  RED.nodes.registerType('wot-server-property', WoTServerProperty, {
+  RED.nodes.registerType('wot-server-event', WoTServerEvent, {
     credentials: {
       inParams_propertyName: { type: 'text' }
     }

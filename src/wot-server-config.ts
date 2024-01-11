@@ -62,6 +62,77 @@ module.exports = function (RED) {
       throw new Error('Not enough WoT Nodes settings.')
     }
 
+    async function registerPropertiesProcess(
+      userNode: any,
+      thing: any,
+      props: any
+    ) {
+      thing.setPropertyReadHandler(props.name, () => {
+        console.log('*** call propertyReadHandler')
+        console.log('*** userNodes.length', userNodes.length)
+        return new Promise<any>((resolve, reject) => {
+          const finish = (payload) => {
+            console.log('*** finish', payload)
+            resolve(payload)
+          }
+          userNode.send([
+            {
+              wot: { finish }
+            },
+            null
+          ])
+        })
+      })
+      if (!props.content.readOnly) {
+        thing.setPropertyWriteHandler(props.name, async (value: any) => {
+          const v = await value.value()
+          console.log('*** call propertyWriteHandler', v)
+          console.log('*** userNodes.length', userNodes.length)
+          return new Promise<void>((resolve, reject) => {
+            const finish = (payload) => {
+              console.log('*** finish', props)
+              if (props.content.observable) {
+                console.log('*** emitPropertyChange', props.name)
+                thing.emitPropertyChange(props.name)
+              }
+              resolve()
+            }
+            console.log('*** userNode', userNode)
+            userNode.send([
+              null,
+              {
+                wot: { finish },
+                [props.outputAttr]: v
+              }
+            ])
+          })
+        })
+      }
+    }
+
+    async function registerActionsProcess(
+      userNode: any,
+      thing: any,
+      props: any
+    ) {
+      thing.setActionHandler(props.name, async (params) => {
+        const args = await params.value()
+        console.log('*** call actionHandler')
+        console.log('*** actionHandler userNodes.length', userNodes.length)
+        return new Promise<void>((resolve, reject) => {
+          const finish = (payload) => {
+            console.log('*** actionHandler finish', props, payload)
+            resolve(payload)
+          }
+          console.log('*** actionHandler userNode', userNode)
+          userNode.send({
+            wot: { finish },
+            [props.outputArgs]: args
+          })
+        })
+      })
+    }
+
     async function createWoTScriptAndStart(
       title: string,
       description: string,
@@ -85,52 +156,16 @@ module.exports = function (RED) {
       for (const userNode of userNodes) {
         const props = userNode.getProps()
         console.log('*** props', props)
+        if (!props.name) {
+          console.warn('[warn] Not enough settings for td. props: ', props)
+          continue
+        }
         if (props.attrType === 'properties') {
-          thing.setPropertyReadHandler(props.name, () => {
-            console.log('*** call propertyReadHandler')
-            console.log('*** userNodes.length', userNodes.length)
-            return new Promise<any>((resolve, reject) => {
-              const finish = (payload) => {
-                console.log('*** finish', payload)
-                resolve(payload)
-              }
-              userNode.send([
-                {
-                  wot: { finish }
-                },
-                null
-              ])
-            })
-          })
-          if (!props.content.readOnly) {
-            thing.setPropertyWriteHandler(props.name, async (value: any) => {
-              const v = await value.value()
-              console.log('*** call propertyWriteHandler', v)
-              console.log('*** userNodes.length', userNodes.length)
-              return new Promise<void>((resolve, reject) => {
-                const finish = (payload) => {
-                  console.log('*** finish', props)
-                  if (props.content.observable) {
-                    console.log('*** emitPropertyChange', props.name)
-                    thing.emitPropertyChange(props.name)
-                  }
-                  resolve()
-                }
-                console.log('*** userNode', userNode)
-                userNode.send([
-                  null,
-                  {
-                    wot: { finish },
-                    [props.outputAttr]: v
-                  }
-                ])
-              })
-            })
-          }
+          registerPropertiesProcess(userNode, thing, props)
         } else if (props.attrType === 'actions') {
-          //TODO: implements
+          registerActionsProcess(userNode, thing, props)
         } else if (props.attrType === 'events') {
-          //TODO: implements
+          // Nothing to do
         }
       }
       await servientWrapper.exposeThing()

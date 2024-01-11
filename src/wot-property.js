@@ -29,6 +29,7 @@ module.exports = function (RED) {
       return
     }
 
+    //TODO: impleement observeProperty
     RED.nodes.getNode(config.thing).consumedThing.then((consumedThing) => {
       this.interval_id = setInterval(
         (function readProperty() {
@@ -37,14 +38,13 @@ module.exports = function (RED) {
             : undefined
           consumedThing
             .readProperty(config.property, { uriVariables: uriVariables })
-            .then((resp) => {
-              resp.value().then((value) => {
-                node.send({ payload: value, topic: config.topic })
-                node.status({
-                  fill: 'green',
-                  shape: 'dot',
-                  text: 'connected'
-                })
+            .then(async (resp) => {
+              const payload = await resp.value()
+              node.send({ payload, topic: config.topic })
+              node.status({
+                fill: 'green',
+                shape: 'dot',
+                text: 'connected'
               })
             })
             .catch((err) => {

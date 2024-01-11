@@ -1,19 +1,17 @@
 <script type="text/javascript">
     (() => {
-        RED.nodes.registerType('wot-server-property', {
+        RED.nodes.registerType('wot-server-event', {
             category: "Web of Things",
             color: "#d7d7a0",
             defaults: {
                 name: {value:""},
-                propertyName: {value:""},
-                propertyDescription: {value:""},
-                propertyDataType: {value:"string"},
-                propertyReadOnlyFlag: {value:true},
-                propertyObservableFlag: {value:true},
-                outParams2_writingValueType: {
+                eventName: {value:""},
+                eventDescription: {value:""},
+                eventDataType: {value:"string"},
+                inParams_eventValueType: {
                     value: "msg"
                 },
-                outParams2_writingValueConstValue: {
+                inParams_eventValueConstValue: {
                     value: "payload"
                 },
                 woTServerConfig: {
@@ -22,19 +20,13 @@
                 }
             },
             credentials: {
-                outParams2_writingValue: {type: "text"}
+                inParams_eventValue: {type: "text"}
             },
             inputs:1,
-            outputs:2,
-            outputLabels: function(index) {
-                return [
-                    this._("editor.outParams1.outputLabel"),
-                    this._("editor.outParams2.outputLabel")
-                ][index]
-            },
+            outputs:0,
             icon: "arrow.png",
             label: function() {
-                return this.name||this._("editor.paletteLabel")||"wot-server-property";
+                return this.name||this._("editor.paletteLabel")||"wot-server-event";
             },
             labelStyle: function() {
                 return this.name?"node_label_italic":"";
@@ -56,12 +48,13 @@
                         },
                     });
                 tabs.addTab({
-                    id: 'tab-outParams2-settings',
-                    label: this._('editor.outParams2.tabLabel'),
+                    id: 'tab-inParams-settings',
+                    label: this._('editor.inParams.tabLabel')+"(削除予定)",
                 });
-                // 出力パラメータの指定項目作成
-                prepareInOutParamSetting("outParams2", {
-                    name: "writingValue",
+
+                // 入力パラメータの指定項目作成
+                prepareInOutParamSetting("inParams", {
+                    name:"eventValue",
                     types: ["msg"],
                     defaultType: "msg",
                     defaultValue: "payload",
@@ -69,8 +62,8 @@
                 }, this)
             },
             oneditsave: function() {
-                saveInOutParamSetting("outParams2", {
-                    name: "writingValue",
+                saveInOutParamSetting("inParams", {
+                    name:"eventValue",
                     types: ["msg"],
                     defaultType: "msg",
                     defaultValue: "payload",
@@ -117,7 +110,7 @@
 </script>
 
 <!-- ノード編集画面テンプレート -->
-<script type="text/html" data-template-name="wot-server-property">
+<script type="text/html" data-template-name="wot-server-event">
 
 	<div class="form-row">
 		<label for="node-input-name"><span data-i18n="editor.nameLabel"></span></label>
@@ -130,28 +123,20 @@
     </div>
     <!-- end config -->
 
-    <!-- start property properties -->
+    <!-- start event properties -->
 	<div class="form-row">
-		<label for="node-input-propertyName"><span data-i18n="editor.propertyNameLabel"></span></label>
-		<input type="text" id="node-input-propertyName" data-i18n="[placeholder]editor.propertyNameLabel">
+		<label for="node-input-eventName"><span data-i18n="editor.eventNameLabel"></span></label>
+		<input type="text" id="node-input-eventName" data-i18n="[placeholder]editor.eventNameLabel">
 	</div>
 	<div class="form-row">
-		<label for="node-input-propertyDataType"><span data-i18n="editor.propertyDataTypeLabel"></span></label>
-		<select id="node-input-propertyDataType" data-i18n="[placeholder]editor.propertyDataTypeLabel">
+		<label for="node-input-eventDataType"><span data-i18n="editor.eventDataTypeLabel"></span></label>
+		<select id="node-input-eventDataType" data-i18n="[placeholder]editor.eventDataTypeLabel">
             <option value="string">文字列(todo:labeling)</option>
             <option value="integer">整数(todo:labeling)</option>
             <option value="object">オブジェクト(todo:labeling)</option>
         </select>
 	</div>
-	<div class="form-row">
-		<label for="node-input-propertyReadOnlyFlag"><span data-i18n="editor.propertyReadOnlyFlagLabel"></span></label>
-		<input type="checkbox" id="node-input-propertyReadOnlyFlag" data-i18n="[placeholder]editor.propertyReadOnlyFlagLabel">
-	</div>
-	<div class="form-row">
-		<label for="node-input-propertyObservableFlag"><span data-i18n="editor.propertyObservableFlagLabel"></span></label>
-		<input type="checkbox" id="node-input-propertyObservableFlag" data-i18n="[placeholder]editor.propertyObservableFlagLabel">
-	</div>
-    <!-- end property properties -->
+    <!-- end event properties -->
 
     <!-- Tab -->
     <div class="form-row">
@@ -160,13 +145,13 @@
     </div>
     <!-- Tab contents -->
     <div id="tabs-content" style="min-height:250px;">
-        <!-- 出力パラメータ指定 -->
-        <div id="tab-outParams2-settings">
+        <!-- 入力パラメータ指定 -->
+        <div id="tab-inParams-settings">
             <div class='form-row'>
-                <label for='node-input-outParams2_writingValue'><span data-i18n="editor.outParams2.writingValue.label"></span></label>
-                <input required type='text' id='node-input-outParams2_writingValue' data-i18n="[placeholder]editor.outParams2.writingValue.placeholder">
-                <input type='hidden' id='node-input-outParams2_writingValueType'>
-                <input type='hidden' id='node-input-outParams2_writingValueConstValue'>
+                <label for='node-input-inParams_eventValue'><span data-i18n="editor.inParams.eventValue.label"></span></label>
+                <input required type='text' id='node-input-inParams_eventValue' data-i18n="[placeholder]editor.inParams.eventValue.placeholder">
+                <input type='hidden' id='node-input-inParams_eventValueType'>
+                <input type='hidden' id='node-input-inParams_eventValueConstValue'>
             </div>
         </div>
     </div>

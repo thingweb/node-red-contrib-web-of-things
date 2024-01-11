@@ -8,38 +8,21 @@ module.exports = function (RED) {
     // inputイベント
     node.on('input', async (msg, send, done) => {
       console.log('*** wot-server-end input msg', msg)
-      msg.wot?.finish(msg.payload)
-      return
-
-      // configノードを取得
-      const woTServerConfig = RED.nodes.getNode(config.woTServerConfig)
       // 入力パラメータを取得
-      node.inParams_propertyName = node.credentials.inParams_propertyName
+      node.inParams_returnValue = node.credentials.inParams_returnValue
       if (
-        config.inParams_propertyNameConstValue &&
-        config.inParams_propertyNameType
+        config.inParams_returnValueConstValue &&
+        config.inParams_returnValueType
       ) {
-        node.inParams_propertyName = RED.util.evaluateNodeProperty(
-          config.inParams_propertyNameConstValue,
-          config.inParams_propertyNameType,
+        node.inParams_returnValue = RED.util.evaluateNodeProperty(
+          config.inParams_returnValueConstValue,
+          config.inParams_returnValueType,
           node,
           msg
         )
       }
-      console.log('node.inParams_propertyName:', node.inParams_propertyName)
-
-      // 出力の作成
-      // 出力の出力を返す場合
-      setOutput(
-        config.outParams1_output1Type,
-        config.outParams1_output1ConstValue,
-        msg,
-        this.context(),
-        '[value of outParams1_output1]'
-      )
-      // ここまで
-
-      send(msg)
+      console.log('node.inParams_returnValue:', node.inParams_returnValue)
+      msg.wot?.finish(node.inParams_returnValue)
       done()
     })
     // closeイベント

@@ -13,19 +13,10 @@
     },
     "inParams": {
       "tabLabel": "入力",
-      "propertyName": {
-        "label": "Thing名",
-        "description": "Thing名の説明。",
-        "placeholder": "Thing名"
-      }
-    },
-    "outParams1": {
-      "tabLabel": "出力",
-      "outputLabel": "出力",
-      "output1": {
-        "label": "出力パラメータ1",
-        "description": "出力パラメータ1の説明。",
-        "placeholder": "出力パラメータ1"
+      "returnValue": {
+        "label": "戻り値の格納元",
+        "description": "戻り値の格納元",
+        "placeholder": "戻り値の格納元"
       }
     }
   }

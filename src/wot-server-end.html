@@ -6,29 +6,18 @@
             color: "#d7d7a0",
             defaults: {
                 name: {value:""},
-                inParams_propertyNameType: {
-                    value: "str"
-                },
-                inParams_propertyNameConstValue: {
-                    value: "payload"
-                },
-                outParams1_output1Type: {
+                inParams_returnValueType: {
                     value: "msg"
                 },
-                outParams1_output1ConstValue: {
-                    value: "payload1_1"
+                inParams_returnValueConstValue: {
+                    value: "payload"
                 }
             },
             credentials: {
-                inParams_propertyName: {type: "text"},
+                inParams_returnValue: {type: "text"},
             },
             inputs:1,
             outputs:0,
-            outputLabels: function(index) {
-                return [
-                    this._("editor.outParams1.outputLabel")
-                ][index]
-            },
             icon: "arrow.png",
             label: function() {
                 return this.name||this._("editor.paletteLabel")||"wot-server-end";
@@ -52,10 +41,6 @@
                             $("#red-tabs").resize();
                         },
                     });
-                tabs.addTab({
-                    id: 'tab-thingConfig-settings',
-                    label: this._('editor.thingConfig.tabLabel'),
-                });
 
                 tabs.addTab({
                     id: 'tab-inParams-settings',
@@ -64,39 +49,20 @@
 
                 // 入力パラメータの指定項目作成
                 prepareInOutParamSetting("inParams", {
-                    name:"propertyName",
-                    types: ["msg","str","num","env"],
-                    defaultType: "str",
+                    name:"returnValue",
+                    types: ["msg"],
+                    defaultType: "msg",
                     defaultValue: "payload",
                     required: true
                 }, this)
                 
-                tabs.addTab({
-                    id: 'tab-outParams1-settings',
-                    label: this._('editor.outParams1.tabLabel'),
-                });
-                // 出力パラメータの指定項目作成
-                prepareInOutParamSetting("outParams1", {
-                    name: "output1",
-                    types: ["msg","flow"],
-                    defaultType: "msg",
-                    defaultValue: "payload1_1",
-                    required: true
-                }, this)
             },
             oneditsave: function() {
                 saveInOutParamSetting("inParams", {
-                    name:"propertyName",
+                    name:"returnValue",
                     types: ["msg","str","num","env"],
                     defaultType: "str",
                     defaultValue: "payload",
-                    required: true
-                }, this)
-                saveInOutParamSetting("outParams1", {
-                    name: "output1",
-                    types: ["msg","flow"],
-                    defaultType: "msg",
-                    defaultValue: "payload1_1",
                     required: true
                 }, this)
             }
@@ -154,32 +120,13 @@
     </div>
     <!-- Tab contents -->
     <div id="tabs-content" style="min-height:250px;">
-        <!-- Thing設定指定 -->
-        <div id="tab-thingConfig-settings">
-            <div class='form-row'>
-                <label for='node-input-thingConfig_thingName'><span data-i18n="editor.thingConfig.thingName.label"></span></label>
-                <input required type='text' id='node-input-thingConfig_thingName' data-i18n="[placeholder]editor.thingConfig.thingName.placeholder">
-                <input type='hidden' id='node-input-thingConfig_thingNameType'>
-                <input type='hidden' id='node-input-thingConfig_thingNameConstValue'>
-            </div>
-        </div>
-
         <!-- 入力パラメータ指定 -->
         <div id="tab-inParams-settings">
             <div class='form-row'>
-                <label for='node-input-inParams_propertyName'><span data-i18n="editor.inParams.propertyName.label"></span></label>
-                <input required type='text' id='node-input-inParams_propertyName' data-i18n="[placeholder]editor.inParams.propertyName.placeholder">
-                <input type='hidden' id='node-input-inParams_propertyNameType'>
-                <input type='hidden' id='node-input-inParams_propertyNameConstValue'>
-            </div>
-        </div>
-        <!-- 出力パラメータ指定 -->
-        <div id="tab-outParams1-settings">
-            <div class='form-row'>
-                <label for='node-input-outParams1_output1'><span data-i18n="editor.outParams1.output1.label"></span></label>
-                <input required type='text' id='node-input-outParams1_output1' data-i18n="[placeholder]editor.outParams1.output1.placeholder">
-                <input type='hidden' id='node-input-outParams1_output1Type'>
-                <input type='hidden' id='node-input-outParams1_output1ConstValue'>
+                <label for='node-input-inParams_returnValue'><span data-i18n="editor.inParams.returnValue.label"></span></label>
+                <input required type='text' id='node-input-inParams_returnValue' data-i18n="[placeholder]editor.inParams.returnValue.placeholder">
+                <input type='hidden' id='node-input-inParams_returnValueType'>
+                <input type='hidden' id='node-input-inParams_returnValueConstValue'>
             </div>
         </div>
     </div>

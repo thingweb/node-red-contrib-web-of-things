@@ -1,0 +1,17 @@
+{
+    "editor": {
+        "nameLabel": "名前",
+        "eventNameLabel": "イベント名",
+        "eventDataTypeLabel": "データ型",
+        "configLabel": "Thing設定",
+        "paletteLabel": "Server-Event",
+        "inParams": {
+            "tabLabel":"イベントの入力",
+            "eventValue":{
+                "label":"イベント値",
+                "description":"イベント値。",
+                "placeholder":"イベント値"
+            }
+        }
+    }
+}

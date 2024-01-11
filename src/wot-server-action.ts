@@ -15,7 +15,7 @@ module.exports = function (RED) {
     console.log('*** addUserNode finished.', node.id)
     this.status({ fill: 'green', shape: 'dot', text: 'running' })
 
-    // WoTServerConfigノードからプロパティを取得する際に呼び出す
+    // WoTServerConfigノードからアクションの定義を取得する際に呼び出す
     node.getProps = () => {
       return {
         attrType: 'actions',
