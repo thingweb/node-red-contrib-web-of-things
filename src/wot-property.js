@@ -29,37 +29,78 @@ module.exports = function (RED) {
       return
     }
 
-    //TODO: impleement observeProperty
-    RED.nodes.getNode(config.thing).consumedThing.then((consumedThing) => {
-      this.interval_id = setInterval(
-        (function readProperty() {
-          const uriVariables = config.uriVariables
-            ? JSON.parse(config.uriVariables)
-            : undefined
-          consumedThing
-            .readProperty(config.property, { uriVariables: uriVariables })
-            .then(async (resp) => {
-              const payload = await resp.value()
-              node.send({ payload, topic: config.topic })
+    RED.nodes
+      .getNode(config.thing)
+      .consumedThing.then(async (consumedThing) => {
+        if (config.observe === true) {
+          // observePropertyが成功するまで繰り返す
+          let ob
+          while (true) {
+            try {
+              ob = await consumedThing.observeProperty(
+                config.property,
+                async (resp) => {
+                  const payload = await resp.value()
+                  node.send({ payload, topic: config.topic })
+                }
+              )
+            } catch (err) {
+              console.warn(
+                '[warn] property observe error. try again. error: ' + err
+              )
+              node.status({
+                fill: 'red',
+                shape: 'ring',
+                text: 'Observe error'
+              })
+            }
+            if (ob) {
               node.status({
                 fill: 'green',
                 shape: 'dot',
                 text: 'connected'
               })
-            })
-            .catch((err) => {
-              node.warn(err)
-              node.status({
-                fill: 'red',
-                shape: 'ring',
-                text: 'Response error'
+              break
+            }
+            await (() => {
+              return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                  resolve()
+                }, 500)
               })
-            })
-          return readProperty
-        })(),
-        config.interval * 1000
-      )
-    })
+            })()
+          }
+        } else {
+          this.interval_id = setInterval(
+            (function readProperty() {
+              const uriVariables = config.uriVariables
+                ? JSON.parse(config.uriVariables)
+                : undefined
+              consumedThing
+                .readProperty(config.property, { uriVariables: uriVariables })
+                .then(async (resp) => {
+                  const payload = await resp.value()
+                  node.send({ payload, topic: config.topic })
+                  node.status({
+                    fill: 'green',
+                    shape: 'dot',
+                    text: 'connected'
+                  })
+                })
+                .catch((err) => {
+                  node.warn(err)
+                  node.status({
+                    fill: 'red',
+                    shape: 'ring',
+                    text: 'Response error'
+                  })
+                })
+              return readProperty
+            })(),
+            config.interval * 1000
+          )
+        }
+      })
 
     node.on('close', function () {
       if (node.interval_id != null) {
