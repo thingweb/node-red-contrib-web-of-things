@@ -1,5 +1,3 @@
-/** @format */
-
 'use strict'
 
 module.exports = function (RED) {
@@ -14,19 +12,17 @@ module.exports = function (RED) {
       this.status({
         fill: 'red',
         shape: 'dot',
-        text: 'Error: Choose an action'
+        text: 'Error: Choose an action',
       })
       return
     }
 
     this.on('input', function (msg) {
       RED.nodes.getNode(config.thing).consumedThing.then((consumedThing) => {
-        const uriVariables = config.uriVariables
-          ? JSON.parse(config.uriVariables)
-          : undefined
+        const uriVariables = config.uriVariables ? JSON.parse(config.uriVariables) : undefined
         consumedThing
           .invokeAction(config.action, msg.payload, {
-            uriVariables: uriVariables
+            uriVariables: uriVariables,
           })
           .then(async (resp) => {
             const payload = resp ? await resp.value() : ''
@@ -34,7 +30,7 @@ module.exports = function (RED) {
             node.status({
               fill: 'green',
               shape: 'dot',
-              text: 'invoked'
+              text: 'invoked',
             })
           })
           .catch((err) => {
@@ -42,7 +38,7 @@ module.exports = function (RED) {
             node.status({
               fill: 'red',
               shape: 'ring',
-              text: err.message
+              text: err.message,
             })
           })
       })

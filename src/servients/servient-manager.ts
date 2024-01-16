@@ -1,22 +1,13 @@
-/** @format */
-
 import HttpServientWrapper from './http-servient-wrapper'
 
 // servient type
 export interface ServientWrapper {
   // Servientを作成できるか確認する
   isConflict(type: string, params: any): boolean
-  //addUserNode(node: any): void
   createThing(td: any): Promise<any>
   exposeThing(): Promise<void>
   getThing(): any
-  // startServient(
-  //   title: string,
-  //   description: string,
-  //   userNodeIds: string[]
-  // ): Promise<boolean>
   endServient(): Promise<void>
-  //emitPropertyChange(propertyName: string): Promise<void>
 }
 
 // servientのインスタンスを管理する
@@ -32,22 +23,14 @@ export default class ServientManager {
   private constructor() {
     console.log('*** ServientManager constructor called')
   }
-  public createServientWrapper(
-    id: string,
-    type: string,
-    params: any
-  ): ServientWrapper {
-    console.log('*** createServientWrapper', id, type, params)
-    if (!this.canCreateServient(type, params)) {
-      throw new Error(
-        `servient wrapper conflicted. type: ${type} params: ${JSON.stringify(
-          params
-        )}`
-      )
+  public createServientWrapper(id: string, bindingType: string, params: any): ServientWrapper {
+    console.log('*** createServientWrapper', id, bindingType, params)
+    if (!this.canCreateServient(bindingType, params)) {
+      throw new Error(`servient wrapper conflicted. type: ${bindingType} params: ${JSON.stringify(params)}`)
     }
-    if (type === 'http') {
+    if (bindingType === 'http') {
       this.servientWrappers[id] = new HttpServientWrapper(id, params)
-    } else if (type === 'coap') {
+    } else if (bindingType === 'coap') {
       //TODO
     }
     return this.servientWrappers[id]
@@ -64,10 +47,7 @@ export default class ServientManager {
   //   return this.servientWrappers[id]
   // }
   private canCreateServient(type: string, params: any) {
-    console.log(
-      '*** canCreateServient this.servientWrappers',
-      this.servientWrappers
-    )
+    console.log('*** canCreateServient this.servientWrappers', this.servientWrappers)
     for (const id in this.servientWrappers) {
       if (this.servientWrappers[id].isConflict(type, params)) {
         return false

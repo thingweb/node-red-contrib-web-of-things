@@ -1,5 +1,3 @@
-/** @format */
-
 'use strict'
 
 module.exports = function (RED) {
@@ -18,66 +16,62 @@ module.exports = function (RED) {
       return
     }
 
-    RED.nodes
-      .getNode(config.thing)
-      .consumedThing.then(async (consumedThing) => {
-        let subscription
-        // イベントのサブスクリプションが成功するまで繰り返す
-        while (true) {
-          subscription = await consumedThing
-            .subscribeEvent(
-              config.event,
-              async (resp) => {
-                if (resp) {
-                  const payload = await resp.value()
-                  node.send({ payload, topic: config.topic })
-                }
-                node.status({
-                  fill: 'green',
-                  shape: 'dot',
-                  text: 'Subscribed'
-                })
-              },
-              (err) => {
-                node.warn(err)
-                node.status({
-                  fill: 'red',
-                  shape: 'ring',
-                  text: 'Subscription error'
-                })
-              },
-              () => {
-                node.warn('Subscription ended.')
-                node.status({})
-                node.subscription = undefined
+    RED.nodes.getNode(config.thing).consumedThing.then(async (consumedThing) => {
+      let subscription
+      // イベントのサブスクリプションが成功するまで繰り返す
+      while (true) {
+        subscription = await consumedThing
+          .subscribeEvent(
+            config.event,
+            async (resp) => {
+              if (resp) {
+                const payload = await resp.value()
+                node.send({ payload, topic: config.topic })
               }
-            )
-            .catch((err) => {
-              console.warn(
-                '[warn] event subscribe error. try again. error: ' + err
-              )
-            })
-          if (subscription) {
-            break
-          }
-          await (() => {
-            return new Promise((resolve, reject) => {
-              setTimeout(() => {
-                resolve()
-              }, 500)
-            })
-          })()
-        }
-        node.subscription = subscription
-
-        if (node.subscription) {
-          node.status({
-            fill: 'green',
-            shape: 'dot',
-            text: 'Subscribed'
+              node.status({
+                fill: 'green',
+                shape: 'dot',
+                text: 'Subscribed',
+              })
+            },
+            (err) => {
+              node.warn(err)
+              node.status({
+                fill: 'red',
+                shape: 'ring',
+                text: 'Subscription error',
+              })
+            },
+            () => {
+              node.warn('Subscription ended.')
+              node.status({})
+              node.subscription = undefined
+            }
+          )
+          .catch((err) => {
+            console.warn('[warn] event subscribe error. try again. error: ' + err)
           })
+        if (subscription) {
+          break
         }
-      })
+        await (() => {
+          return new Promise((resolve, reject) => {
+            setTimeout(() => {
+              resolve()
+            }, 500)
+          })
+        })()
+      }
+      node.subscription = subscription
+
+      if (node.subscription) {
+        node.status({
+          fill: 'green',
+          shape: 'dot',
+          text: 'Subscribed',
+        })
+      }
+    })
 
     this.on('close', function (removed, done) {
       if (removed) {

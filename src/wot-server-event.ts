@@ -1,4 +1,3 @@
-/** @format */
 import ServientManager from './servients/servient-manager'
 
 module.exports = function (RED) {
@@ -23,8 +22,8 @@ module.exports = function (RED) {
         outputAttr: config.inParams_eventValueConstValue,
         content: {
           description: config.eventDescription,
-          data: { type: config.eventDataType }
-        }
+          data: { type: config.eventDataType },
+        },
       }
     }
 
@@ -36,10 +35,7 @@ module.exports = function (RED) {
 
       // 入力パラメータを取得
       node.inParams_eventValue = node.credentials.inParams_eventValue
-      if (
-        config.inParams_eventValueConstValue &&
-        config.inParams_eventValueType
-      ) {
+      if (config.inParams_eventValueConstValue && config.inParams_eventValueType) {
         node.inParams_eventValue = RED.util.evaluateNodeProperty(
           config.inParams_eventValueConstValue,
           config.inParams_eventValueType,
@@ -69,8 +65,8 @@ module.exports = function (RED) {
   }
   RED.nodes.registerType('wot-server-event', WoTServerEvent, {
     credentials: {
-      inParams_propertyName: { type: 'text' }
-    }
+      inParams_propertyName: { type: 'text' },
+    },
   })
 
   const setOutput = (type, valueName, msg, context, value) => {

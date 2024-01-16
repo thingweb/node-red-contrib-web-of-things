@@ -1,10 +1,25 @@
 <script type='text/javascript'>
     (() => {
+        const BINDING_TYPE_LIST = ["http", "coap"]
+        const BINDING_CONFIG_DEFAULT = {
+            http: {
+                port: 8181
+            },
+            coap: {
+                coap:"coap"
+            }
+        }
+
         RED.nodes.registerType('wot-server-config', {
             category: 'config',
             defaults: {
-                name: { value: 'thing01' },
-                bindingType: {value:'http-8181'},
+                name: { value: 'thing-name' },
+                bindingType: {value:'http'},
+                bindingConfigType: {value:'json'},
+                bindingConfigConstValue: {value:'{}'},
+            },
+            credentials: {
+                bindingConfig: {type: "object"},
             },
             label: function () {
                 return this.name || this._("editor.configLabel");
@@ -13,8 +28,40 @@
                 return this.name ? 'node_label_italic' : ''
             },
             oneditprepare: function() {
+                 // 入力パラメータの指定項目作成
+                 createInOutParamSetting({
+                    name:"bindingConfig",
+                    types: ["json"],
+                    defaultType: "json",
+                    defaultValue: '{}',
+                    required: true
+                }, this)
+
+               BINDING_TYPE_LIST.forEach((type) => {
+                    console.log("*** bindingType", type)
+                    $("#node-config-input-bindingType").append(`<option value="${type}">${type}</option>`)
+                })
+
+                $("#node-config-input-bindingType").val(this.bindingType)
+
+                $("#node-config-input-bindingType").on("change", () => {
+                    const selectedBindingType = $("#node-config-input-bindingType").val()
+                    console.log("*** selectedBindingType", selectedBindingType)
+                    if(selectedBindingType === this.bindingType && this.bindingConfigConstValue !== "{}") {
+                        $("#node-config-input-bindingConfig").typedInput("value", this.bindingConfigConstValue)
+                    } else {
+                        $("#node-config-input-bindingConfig").typedInput("value", JSON.stringify(BINDING_CONFIG_DEFAULT[selectedBindingType]))
+                    }
+                })
             },
             oneditsave: function() {
+                saveInOutParamSetting({
+                    name:"bindingConfig",
+                    types: ["json"],
+                    defaultType: "json",
+                    defaultValue: '{}',
+                    required: true
+                }, this)
             }
         })
 
@@ -51,6 +98,7 @@
                 _this[`${name}ConstValue`] = ''
             }
         }
+
     })()
 </script>
 
@@ -62,9 +110,12 @@
     <div class='form-row'>
         <label for='node-config-input-bindingType'><span data-i18n="editor.bindingTypeLabel"></span></label>
         <select id='node-config-input-bindingType'>
-            <option value="http-8181">HTTP:8181</option>
-            <option value="http-8282">HTTP:8282</option>
-            <option value="coap">CoAP</option>
         </select>
+    </div>
+    <div class='form-row'>
+        <label for='node-config-input-bindingConfig'><span data-i18n="editor.bindingConfigLabel"></span></label>
+        <input required type='text' id='node-config-input-bindingConfig' data-i18n="[placeholder]editor.bindingConfigPlaceholder">
+        <input type='hidden' id='node-config-input-bindingConfigType'>
+        <input type='hidden' id='node-config-input-bindingConfigConstValue'>
     </div>
 </script>

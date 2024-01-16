@@ -1,5 +1,3 @@
-/** @format */
-
 module.exports = function (RED) {
   function WoTServerEnd(config) {
     RED.nodes.createNode(this, config)
@@ -10,10 +8,7 @@ module.exports = function (RED) {
       console.log('*** wot-server-end input msg', msg)
       // 入力パラメータを取得
       node.inParams_returnValue = node.credentials.inParams_returnValue
-      if (
-        config.inParams_returnValueConstValue &&
-        config.inParams_returnValueType
-      ) {
+      if (config.inParams_returnValueConstValue && config.inParams_returnValueType) {
         node.inParams_returnValue = RED.util.evaluateNodeProperty(
           config.inParams_returnValueConstValue,
           config.inParams_returnValueType,
@@ -22,7 +17,7 @@ module.exports = function (RED) {
         )
       }
       console.log('node.inParams_returnValue:', node.inParams_returnValue)
-      msg.wot?.finish(node.inParams_returnValue)
+      msg._wot?.finish(node.inParams_returnValue)
       done()
     })
     // closeイベント
@@ -38,8 +33,8 @@ module.exports = function (RED) {
   }
   RED.nodes.registerType('wot-server-end', WoTServerEnd, {
     credentials: {
-      inParams_propertyName: { type: 'text' }
-    }
+      inParams_propertyName: { type: 'text' },
+    },
   })
 
   const setOutput = (type, valueName, msg, context, value) => {

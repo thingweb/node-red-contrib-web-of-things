@@ -1,6 +1,3 @@
-/** @format */
-import ServientManager from './servients/servient-manager'
-
 module.exports = function (RED) {
   function WoTServerAction(config) {
     RED.nodes.createNode(this, config)
@@ -24,12 +21,12 @@ module.exports = function (RED) {
         content: {
           description: config.actionDescription,
           input: {
-            type: config.actionInputDataType
+            type: config.actionInputDataType,
           },
           output: {
-            type: config.actionOutputDataType
-          }
-        }
+            type: config.actionOutputDataType,
+          },
+        },
       }
     }
 
@@ -50,7 +47,7 @@ module.exports = function (RED) {
   }
   RED.nodes.registerType('wot-server-action', WoTServerAction, {
     credentials: {
-      inParams_actionName: { type: 'text' }
-    }
+      inParams_actionName: { type: 'text' },
+    },
   })
 }

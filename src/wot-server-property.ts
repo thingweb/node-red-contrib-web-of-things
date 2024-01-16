@@ -1,4 +1,3 @@
-/** @format */
 import ServientManager from './servients/servient-manager'
 
 module.exports = function (RED) {
@@ -25,8 +24,8 @@ module.exports = function (RED) {
           description: config.propertyDescription,
           type: config.propertyDataType,
           readOnly: config.propertyReadOnlyFlag,
-          observable: config.propertyObservableFlag
-        }
+          observable: config.propertyObservableFlag,
+        },
       }
     }
 
@@ -36,13 +35,8 @@ module.exports = function (RED) {
       const woTServerConfig = RED.nodes.getNode(config.woTServerConfig)
       console.log('*** servientWrapper', woTServerConfig.servientWrapper)
 
-      console.log(
-        '*** woTServerConfig.emitPropertyChange:',
-        config.propertyName
-      )
-      await ServientManager.getInstance()
-        .getThing(woTServerConfig.id)
-        .emitPropertyChange(config.propertyName)
+      console.log('*** woTServerConfig.emitPropertyChange:', config.propertyName)
+      await ServientManager.getInstance().getThing(woTServerConfig.id).emitPropertyChange(config.propertyName)
       console.log('*** emitPropertyChange finished', config.propertyName)
 
       // 変更されたプロパティ値を入力された場合は出力なし
@@ -61,8 +55,8 @@ module.exports = function (RED) {
   }
   RED.nodes.registerType('wot-server-property', WoTServerProperty, {
     credentials: {
-      inParams_propertyName: { type: 'text' }
-    }
+      inParams_propertyName: { type: 'text' },
+    },
   })
 
   const setOutput = (type, valueName, msg, context, value) => {

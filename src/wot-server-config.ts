@@ -1,5 +1,4 @@
-/** @format */
-
+import { ExposedThing } from '@node-wot/core'
 import ServientManager, { ServientWrapper } from './servients/servient-manager'
 
 module.exports = function (RED) {
@@ -11,9 +10,7 @@ module.exports = function (RED) {
 
     node.addUserNode = (n) => {
       console.log('*** addUserNode', n)
-      const foundUserNodes = userNodes.filter(
-        (userNode) => userNode.id === n.id
-      )
+      const foundUserNodes = userNodes.filter((userNode) => userNode.id === n.id)
       console.log('*** foundUserNodes.length', foundUserNodes.length)
       if (foundUserNodes.length === 0) {
         console.log('*** addUserNode executed')
@@ -21,10 +18,7 @@ module.exports = function (RED) {
       }
     }
 
-    async function waitForFinishPrepareRelatedNodes(
-      userNodes: any[],
-      userNodeIds: string[]
-    ) {
+    async function waitForFinishPrepareRelatedNodes(userNodes: any[], userNodeIds: string[]) {
       console.log('*** userNodeIds', userNodeIds)
       console.log('*** userNodes', userNodes)
       const MAX_CHECK_COUNT = 50
@@ -62,11 +56,7 @@ module.exports = function (RED) {
       throw new Error('Not enough WoT Nodes settings.')
     }
 
-    async function registerPropertiesProcess(
-      userNode: any,
-      thing: any,
-      props: any
-    ) {
+    async function registerPropertiesProcess(userNode: any, thing: ExposedThing, props: any) {
       thing.setPropertyReadHandler(props.name, () => {
         console.log('*** call propertyReadHandler')
         console.log('*** userNodes.length', userNodes.length)
@@ -77,9 +67,9 @@ module.exports = function (RED) {
           }
           userNode.send([
             {
-              wot: { finish }
+              _wot: { finish },
             },
-            null
+            null,
           ])
         })
       })
@@ -101,33 +91,29 @@ module.exports = function (RED) {
             userNode.send([
               null,
               {
-                wot: { finish },
-                [props.outputAttr]: v
-              }
+                _wot: { finish },
+                [props.outputAttr]: v,
+              },
             ])
           })
         })
       }
     }
 
-    async function registerActionsProcess(
-      userNode: any,
-      thing: any,
-      props: any
-    ) {
+    async function registerActionsProcess(userNode: any, thing: ExposedThing, props: any) {
       thing.setActionHandler(props.name, async (params) => {
         const args = await params.value()
         console.log('*** call actionHandler')
         console.log('*** actionHandler userNodes.length', userNodes.length)
-        return new Promise<void>((resolve, reject) => {
+        return new Promise<any>((resolve, reject) => {
           const finish = (payload) => {
             console.log('*** actionHandler finish', props, payload)
             resolve(payload)
           }
           console.log('*** actionHandler userNode', userNode)
           userNode.send({
-            wot: { finish },
-            [props.outputArgs]: args
+            _wot: { finish },
+            [props.outputArgs]: args,
           })
         })
       })
@@ -146,7 +132,7 @@ module.exports = function (RED) {
         console.log('*** props', props)
         td[props.attrType] = {
           ...td[props.attrType],
-          [props.name]: props.content
+          [props.name]: props.content,
         }
       }
       console.log('*** created td', td)
@@ -176,39 +162,32 @@ module.exports = function (RED) {
       node.bindingType = node.credentials.bindingType
       console.log('***** thing config', config)
       console.log('***** thing node', node)
-      if (node.bindingTypeConstValue && node.bindingTypeType) {
-        node.bindingType = RED.util.evaluateNodeProperty(
-          config.bindingTypeConstValue,
-          config.bindingTypeType,
+      // if (node.bindingTypeConstValue && node.bindingTypeType) {
+      //   node.bindingType = RED.util.evaluateNodeProperty(config.bindingTypeConstValue, config.bindingTypeType, node)
+      // }
+      if (config.bindingConfigConstValue && config.bindingConfigType) {
+        node.bindingConfig = RED.util.evaluateNodeProperty(
+          config.bindingConfigConstValue,
+          config.bindingConfigType,
           node
         )
       }
 
       // Thingの生成
       const bindingType = config.bindingType
-      let type: string, params: any
-      if (bindingType.indexOf('http-') === 0) {
-        const port = Number(bindingType.replace('http-', ''))
-        type = 'http'
-        params = { port }
+      const bindingConfig = node.bindingConfig
+      /*let type: string, params: any
+      if (bindingType === 'http') {
       } else if (bindingType === 'coap') {
         //TODO
-      }
-      console.log('*** createServient', node.id, type, params)
+      }*/
+      console.log('*** createServient', node.id, bindingType, bindingConfig)
       //console.log('*** servientManager', servientManager)
-      const servientWrapper = servientManager.createServientWrapper(
-        node.id,
-        type,
-        params
-      )
+      if (bindingType !== 'http') return //test
+      const servientWrapper = servientManager.createServientWrapper(node.id, bindingType, bindingConfig)
       try {
         await waitForFinishPrepareRelatedNodes(userNodes, config._users)
-        await createWoTScriptAndStart(
-          config.name,
-          '',
-          servientWrapper,
-          userNodes
-        )
+        await createWoTScriptAndStart(config.name, '', servientWrapper, userNodes)
       } catch (err) {
         console.error('[error] ' + err)
       }
@@ -220,21 +199,29 @@ module.exports = function (RED) {
       servientManager.removeServientWrapper(node.id).then(() => {
         // servient終了
         console.log('*** servient ended. config node id: ', config.id)
-        launchServient().then(() => {
-          console.log('*** launched 1')
-        })
+        launchServient()
+          .then(() => {
+            node.log('[info] success to end and launch thing. name: ' + config.name + ' id: ' + config.id)
+          })
+          .catch((err) => {
+            node.error('[error] Failed to launch thing. name: ' + config.name + ' id: ' + config.id + ' err:' + err)
+          })
       })
     } else {
       console.log('*** launch servient.')
-      launchServient().then(() => {
-        console.log('*** launched 2')
-      })
+      launchServient()
+        .then(() => {
+          node.log('[info] success to launch thing. name: ' + config.name + ' id: ' + config.id)
+        })
+        .catch((err) => {
+          node.error('[error] Failed to launch thing. name: ' + config.name + ' id: ' + config.id + ' err:' + err)
+        })
     }
   }
 
   RED.nodes.registerType('wot-server-config', WoTServerConfig, {
     credentials: {
-      bindingType: { type: 'text' }
-    }
+      bindingConfig: { type: 'object' },
+    },
   })
 }

@@ -33,7 +33,7 @@ export default class HttpServientWrapper implements ServientWrapper {
     // create Servient add HTTP binding with port configuration
     this.servient = new Servient()
     this.server = new HttpServer({
-      port: params.port // (default 8080)
+      port: params.port, // (default 8080)
     })
     this.servient.addServer(this.server)
     this.nodeId = id
@@ -214,6 +214,7 @@ export default class HttpServientWrapper implements ServientWrapper {
 
   // 新規に作成するConfigノードが競合するか調べる
   public isConflict(): boolean {
+    return false
     throw new Error('Method not implemented.')
   }
 }
