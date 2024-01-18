@@ -7,9 +7,11 @@ module.exports = function (RED) {
     const node = this
     const userNodes = []
     const servientManager = ServientManager.getInstance()
+    node.running = false
 
     node.addUserNode = (n) => {
       console.log('*** addUserNode', n)
+      n.setServientStatus(node.running)
       const foundUserNodes = userNodes.filter((userNode) => userNode.id === n.id)
       console.log('*** foundUserNodes.length', foundUserNodes.length)
       if (foundUserNodes.length === 0) {
@@ -162,9 +164,6 @@ module.exports = function (RED) {
       node.bindingType = node.credentials.bindingType
       console.log('***** thing config', config)
       console.log('***** thing node', node)
-      // if (node.bindingTypeConstValue && node.bindingTypeType) {
-      //   node.bindingType = RED.util.evaluateNodeProperty(config.bindingTypeConstValue, config.bindingTypeType, node)
-      // }
       if (config.bindingConfigConstValue && config.bindingConfigType) {
         node.bindingConfig = RED.util.evaluateNodeProperty(
           config.bindingConfigConstValue,
@@ -176,11 +175,6 @@ module.exports = function (RED) {
       // Thingの生成
       const bindingType = config.bindingType
       const bindingConfig = node.bindingConfig
-      /*let type: string, params: any
-      if (bindingType === 'http') {
-      } else if (bindingType === 'coap') {
-        //TODO
-      }*/
       console.log('*** createServient', node.id, bindingType, bindingConfig)
       //console.log('*** servientManager', servientManager)
       if (bindingType !== 'http') return //test
@@ -188,8 +182,13 @@ module.exports = function (RED) {
       try {
         await waitForFinishPrepareRelatedNodes(userNodes, config._users)
         await createWoTScriptAndStart(config.name, '', servientWrapper, userNodes)
+        node.running = true
+        userNodes.forEach((n) => {
+          n.setServientStatus(node.running)
+        })
       } catch (err) {
-        console.error('[error] ' + err)
+        //console.error('[error] ' + err)
+        throw err
       }
     }
 

@@ -41,11 +41,6 @@ export default class ServientManager {
     }
     return false
   }
-  // public getServientWrapper(id: string): ServientWrapper {
-  //   console.log('*** getServientWrapper', id)
-  //   console.log('*** this.servientWrappers', this.servientWrappers)
-  //   return this.servientWrappers[id]
-  // }
   private canCreateServient(type: string, params: any) {
     console.log('*** canCreateServient this.servientWrappers', this.servientWrappers)
     for (const id in this.servientWrappers) {
