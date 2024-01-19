@@ -14,22 +14,24 @@
  * SPDX-License-Identifier: EPL-2.0 OR W3C-20150513
  * ******************************************************************************/
 
-import { Servient } from '@node-wot/core'
+import { ExposedThing, Servient } from '@node-wot/core'
 import { HttpServer } from '@node-wot/binding-http'
-import { ServientWrapper } from './servient-manager'
 
-export default class HttpServientWrapper implements ServientWrapper {
+export default class ServientWrapper {
   private servient
+  private wot
   private started = false
   private server
-  private thing
-  public constructor(id: string, params: any) {
+  private things: { [key: string]: ExposedThing } = {}
+  public constructor(bindingType: string, params: any) {
     console.log('***** servient constructor called', params)
     // create Servient add HTTP binding with port configuration
     this.servient = new Servient()
-    this.server = new HttpServer({
-      port: params.port, // (default 8080)
-    })
+    if (bindingType === 'http') {
+      this.server = new HttpServer(params)
+    } else if (bindingType === 'coap') {
+      //TODO
+    }
     this.servient.addServer(this.server)
   }
 
@@ -37,37 +39,38 @@ export default class HttpServientWrapper implements ServientWrapper {
     return this.started
   }
 
-  public async createThing(td) {
-    const wot = await this.servient.start()
-    this.thing = await wot.produce(td)
-    return this.thing
+  public async startServient() {
+    this.wot = await this.servient.start()
+    console.log('*** wot in startServient', this.wot)
   }
 
-  public async exposeThing() {
-    await this.thing.expose()
+  public async createThing(td, thingName: string) {
+    console.log('*** wot in createThing', this.wot)
+    const thing = await this.wot.produce(td)
+    this.things[thingName] = thing
+    return thing
+  }
+
+  public async exposeThing(thing: ExposedThing) {
+    await thing.expose()
     this.started = true
     console.log('*** exposed')
   }
 
-  public getThing() {
-    return this.thing
+  public getThing(thingName: string) {
+    return this.things[thingName]
   }
 
   public async endServient() {
-    if (this.server && this.thing) {
+    if (this.server) {
       console.log('*** call server.destroy')
-      await this.server.destroy(this.thing.id)
+      for (const key in this.things) {
+        await this.server.destroy(this.things[key].id)
+      }
       console.log('*** call server.stop')
       await this.server.stop()
       console.log('*** call servient.shutdown')
       await this.servient.shutdown()
     }
-  }
-
-  // 新規に作成するConfigノードが競合するか調べる
-  public isConflict(): boolean {
-    //TODO: 実装
-    return false
-    throw new Error('Method not implemented.')
   }
 }

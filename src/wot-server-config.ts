@@ -1,5 +1,6 @@
 import { ExposedThing } from '@node-wot/core'
-import ServientManager, { ServientWrapper } from './servients/servient-manager'
+import ServientManager from './servients/servient-manager'
+import ServientWrapper from './servients/servient-wrapper'
 
 module.exports = function (RED) {
   function WoTServerConfig(config) {
@@ -121,7 +122,7 @@ module.exports = function (RED) {
       })
     }
 
-    async function createWoTScriptAndStart(
+    async function createWoTScriptAndExpose(
       title: string,
       description: string,
       servientWrapper: ServientWrapper,
@@ -129,6 +130,7 @@ module.exports = function (RED) {
     ) {
       // TDを作成
       let td = { title, description }
+      let thingName
       for (const userNode of userNodes) {
         const props = userNode.getProps()
         console.log('*** props', props)
@@ -136,9 +138,11 @@ module.exports = function (RED) {
           ...td[props.attrType],
           [props.name]: props.content,
         }
+        thingName = userNode.getThingName()
       }
+      console.log('*** thingNamae', thingName)
       console.log('*** created td', td)
-      const thing = await servientWrapper.createThing(td)
+      const thing = await servientWrapper.createThing(td, thingName)
       console.log('*** thing', thing)
       // 処理を行うために対応するノードにメッセージ送信
       for (const userNode of userNodes) {
@@ -156,7 +160,7 @@ module.exports = function (RED) {
           // Nothing to do
         }
       }
-      await servientWrapper.exposeThing()
+      await servientWrapper.exposeThing(thing)
       console.log('*** servient started')
     }
 
@@ -181,7 +185,22 @@ module.exports = function (RED) {
       const servientWrapper = servientManager.createServientWrapper(node.id, bindingType, bindingConfig)
       try {
         await waitForFinishPrepareRelatedNodes(userNodes, config._users)
-        await createWoTScriptAndStart(config.name, '', servientWrapper, userNodes)
+        // servientの起動
+        await servientWrapper.startServient()
+        // ThingNameの一覧を作成
+        const thingNamesObj = {}
+        console.log('*** userNodes', userNodes)
+        for (const userNode of userNodes) {
+          console.log('*** userNode.getThingName', userNode.getThingName())
+          thingNamesObj[userNode.getThingName()] = true
+        }
+        const thingNames = Object.keys(thingNamesObj)
+        console.log('*** thingNames', thingNames)
+        // Thing名毎にThingの生成とExposeを実施
+        for (const thingName of thingNames) {
+          const targetNodes = userNodes.filter((n) => n.getThingName() === thingName)
+          await createWoTScriptAndExpose(thingName, '', servientWrapper, targetNodes)
+        }
         node.running = true
         userNodes.forEach((n) => {
           n.setServientStatus(node.running)

@@ -1,14 +1,4 @@
-import HttpServientWrapper from './http-servient-wrapper'
-
-// servient type
-export interface ServientWrapper {
-  // Servientを作成できるか確認する
-  isConflict(type: string, params: any): boolean
-  createThing(td: any): Promise<any>
-  exposeThing(): Promise<void>
-  getThing(): any
-  endServient(): Promise<void>
-}
+import ServientWrapper from './servient-wrapper'
 
 // servientのインスタンスを管理する
 export default class ServientManager {
@@ -25,14 +15,7 @@ export default class ServientManager {
   }
   public createServientWrapper(id: string, bindingType: string, params: any): ServientWrapper {
     console.log('*** createServientWrapper', id, bindingType, params)
-    if (!this.canCreateServient(bindingType, params)) {
-      throw new Error(`servient wrapper conflicted. type: ${bindingType} params: ${JSON.stringify(params)}`)
-    }
-    if (bindingType === 'http') {
-      this.servientWrappers[id] = new HttpServientWrapper(id, params)
-    } else if (bindingType === 'coap') {
-      //TODO
-    }
+    this.servientWrappers[id] = new ServientWrapper(bindingType, params)
     return this.servientWrappers[id]
   }
   public existServienetWrapper(id: string) {
@@ -40,15 +23,6 @@ export default class ServientManager {
       return true
     }
     return false
-  }
-  private canCreateServient(type: string, params: any) {
-    console.log('*** canCreateServient this.servientWrappers', this.servientWrappers)
-    for (const id in this.servientWrappers) {
-      if (this.servientWrappers[id].isConflict(type, params)) {
-        return false
-      }
-    }
-    return true
   }
   public async removeServientWrapper(id: string) {
     console.log('*** removeServientWrapper')
@@ -73,8 +47,8 @@ export default class ServientManager {
     })
   }
 
-  public getThing(id: string) {
+  public getThing(id: string, thingName: string) {
     const servientWrapper = this.servientWrappers[id]
-    return servientWrapper?.getThing()
+    return servientWrapper?.getThing(thingName)
   }
 }

@@ -1,19 +1,20 @@
 {
-    "editor": {
-        "nameLabel": "名前",
-        "actionNameLabel": "アクション名",
-        "actionInputDataTypeLabel": "引数のデータ型",
-        "actionOutputDataTypeLabel": "戻り値のデータ型",
-        "configLabel": "Thing設定",
-        "paletteLabel": "Server-Action",
-        "outParams1": {
-            "tabLabel":"アクション呼び出し",
-            "outputLabel":"アクションの引数",
-            "actionArgs":{
-                "label":"引数の格納先",
-                "description":"アクションの引数の格納先。",
-                "placeholder":"引数の格納先"
-            }
-        }
+  "editor": {
+    "nameLabel": "名前",
+    "actionNameLabel": "アクション名",
+    "actionInputDataTypeLabel": "引数のデータ型",
+    "actionOutputDataTypeLabel": "戻り値のデータ型",
+    "serverConfigLabel": "サーバ設定",
+    "thingConfigLabel": "Thing設定",
+    "paletteLabel": "Server-Action",
+    "outParams1": {
+      "tabLabel": "アクション呼び出し",
+      "outputLabel": "アクションの引数",
+      "actionArgs": {
+        "label": "引数の格納先",
+        "description": "アクションの引数の格納先。",
+        "placeholder": "引数の格納先"
+      }
     }
+  }
 }

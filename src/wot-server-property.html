@@ -19,6 +19,10 @@
                 woTServerConfig: {
                     type: "wot-server-config",
                     required: true
+                },
+                woTThingConfig: {
+                    type: "wot-thing-config",
+                    required: true
                 }
             },
             credentials: {
@@ -124,8 +128,12 @@
 	</div>
     <!-- start config -->
     <div class='form-row'>
-        <label for='node-input-woTServerConfig' style='font-size: 95%;'><span data-i18n="editor.configLabel"></label>
-        <input required type='url' id='node-input-woTServerConfig' placeholder='[placeholder]editor.configLabel'>
+        <label for='node-input-woTServerConfig' style='font-size: 95%;'><span data-i18n="editor.serverConfigLabel"></label>
+        <input required type='url' id='node-input-woTServerConfig' placeholder='[placeholder]editor.serverConfigLabel'>
+    </div>
+    <div class='form-row'>
+        <label for='node-input-woTThingConfig' style='font-size: 95%;'><span data-i18n="editor.thingConfigLabel"></label>
+        <input required type='url' id='node-input-woTThingConfig' placeholder='[placeholder]editor.thingConfigLabel'>
     </div>
     <!-- end config -->
 

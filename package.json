@@ -27,6 +27,7 @@
       "wot-action": "dist/wot-action.js",
       "wot-event": "dist/wot-event.js",
       "wot-server-config": "dist/wot-server-config.js",
+      "wot-thing-config": "dist/wot-thing-config.js",
       "wot-server-end": "dist/wot-server-end.js",
       "wot-server-property": "dist/wot-server-property.js",
       "wot-server-action": "dist/wot-server-action.js",

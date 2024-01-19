@@ -30,6 +30,12 @@ module.exports = function (RED) {
       }
     }
 
+    // thing名の取得
+    node.getThingName = () => {
+      const woTThingConfig = RED.nodes.getNode(config.woTThingConfig)
+      return woTThingConfig.getThingName()
+    }
+
     // inputイベント
     node.on('input', async (msg, send, done) => {
       // configノードを取得
@@ -48,7 +54,7 @@ module.exports = function (RED) {
       }
       console.log('node.inParams_eventValue:', node.inParams_eventValue)
       await ServientManager.getInstance()
-        .getThing(woTServerConfig.id)
+        .getThing(woTServerConfig.id, node.getThingName())
         .emitEvent(config.eventName, node.inParams_eventValue)
       console.log('*** emitEvent finished')
 

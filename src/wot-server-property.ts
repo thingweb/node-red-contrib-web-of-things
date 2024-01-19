@@ -32,6 +32,12 @@ module.exports = function (RED) {
       }
     }
 
+    // thing名の取得
+    node.getThingName = () => {
+      const woTThingConfig = RED.nodes.getNode(config.woTThingConfig)
+      return woTThingConfig.getThingName()
+    }
+
     // inputイベント
     node.on('input', async (msg, send, done) => {
       // configノードを取得
@@ -39,7 +45,9 @@ module.exports = function (RED) {
       console.log('*** servientWrapper', woTServerConfig.servientWrapper)
 
       console.log('*** woTServerConfig.emitPropertyChange:', config.propertyName)
-      await ServientManager.getInstance().getThing(woTServerConfig.id).emitPropertyChange(config.propertyName)
+      await ServientManager.getInstance()
+        .getThing(woTServerConfig.id, node.getThingName())
+        .emitPropertyChange(config.propertyName)
       console.log('*** emitPropertyChange finished', config.propertyName)
 
       // 変更されたプロパティ値を入力された場合は出力なし

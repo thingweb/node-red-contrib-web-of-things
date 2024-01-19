@@ -33,6 +33,12 @@ module.exports = function (RED) {
       }
     }
 
+    // thing名の取得
+    node.getThingName = () => {
+      const woTThingConfig = RED.nodes.getNode(config.woTThingConfig)
+      return woTThingConfig.getThingName()
+    }
+
     // inputイベント(インプットなし)
     /*node.on('input', async (msg, send, done) => {
       done()
