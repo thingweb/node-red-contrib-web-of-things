@@ -9,6 +9,7 @@ module.exports = function (RED) {
     const userNodes = []
     const servientManager = ServientManager.getInstance()
     node.running = false
+    node.thingDescriptions = {}
 
     node.addUserNode = (n) => {
       console.log('*** addUserNode', n)
@@ -160,7 +161,10 @@ module.exports = function (RED) {
           // Nothing to do
         }
       }
-      await servientWrapper.exposeThing(thing)
+      const thingDescription = await servientWrapper.exposeThing(thing)
+      node.thingDescriptions[`${config.name}::${title}`] = thingDescription
+      node.context().global.set('thingDescriptions', node.thingDescriptions)
+      console.log('**** node.thingDescriptions', node.thingDescriptions)
       console.log('*** servient started')
     }
 
@@ -219,7 +223,7 @@ module.exports = function (RED) {
         console.log('*** servient ended. config node id: ', config.id)
         launchServient()
           .then(() => {
-            node.log('[info] success to end and launch thing. name: ' + config.name + ' id: ' + config.id)
+            node.debug('[info] success to end and launch thing. name: ' + config.name + ' id: ' + config.id)
           })
           .catch((err) => {
             node.error('[error] Failed to launch thing. name: ' + config.name + ' id: ' + config.id + ' err:' + err)
@@ -229,7 +233,7 @@ module.exports = function (RED) {
       console.log('*** launch servient.')
       launchServient()
         .then(() => {
-          node.log('[info] success to launch thing. name: ' + config.name + ' id: ' + config.id)
+          node.debug('[info] success to launch thing. name: ' + config.name + ' id: ' + config.id)
         })
         .catch((err) => {
           node.error('[error] Failed to launch thing. name: ' + config.name + ' id: ' + config.id + ' err:' + err)

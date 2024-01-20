@@ -54,7 +54,9 @@ export default class ServientWrapper {
   public async exposeThing(thing: ExposedThing) {
     await thing.expose()
     this.started = true
-    console.log('*** exposed')
+    const td = thing.getThingDescription()
+    console.log('*** exposed', td)
+    return td
   }
 
   public getThing(thingName: string) {
