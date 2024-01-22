@@ -17,7 +17,7 @@ module.exports = function (RED) {
       return
     }
 
-    this.on('input', function (msg) {
+    this.on('input', function (msg, send, done) {
       RED.nodes.getNode(config.thing).consumedThing.then((consumedThing) => {
         const uriVariables = config.uriVariables ? JSON.parse(config.uriVariables) : undefined
         consumedThing
@@ -32,6 +32,7 @@ module.exports = function (RED) {
               shape: 'dot',
               text: 'invoked',
             })
+            done()
           })
           .catch((err) => {
             node.warn(err)
@@ -40,6 +41,7 @@ module.exports = function (RED) {
               shape: 'ring',
               text: err.message,
             })
+            done(err)
           })
       })
     })

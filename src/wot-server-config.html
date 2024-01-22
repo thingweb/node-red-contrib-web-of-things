@@ -1,19 +1,31 @@
 <script type='text/javascript'>
     (() => {
-        const BINDING_TYPE_LIST = ["http", "coap"]
+        const BINDING_TYPE_LIST = ["http", "websocket", "coap", "mqtt"]
         const BINDING_CONFIG_DEFAULT = {
             http: {
-                port: 8181
+                port: 8080,
+                allowSelfSigned: true
+            },
+            websocket: {
+                port: 9090,
+                allowSelfSigned: true
             },
             coap: {
-                coap:"coap"
-            }
+                port: 5683
+            },
+            mqtt: {
+                broker: "mqtt://test.mosquitto.org",
+                _username: "username",
+                _password: "password",
+                _clientId: "uniqueId",
+                protocolVersion: 5
+            },
         }
 
         RED.nodes.registerType('wot-server-config', {
             category: 'config',
             defaults: {
-                name: { value: 'server-name' },
+                name: { value: '', required:true },
                 bindingType: {value:'http'},
                 bindingConfigType: {value:'json'},
                 bindingConfigConstValue: {value:'{}'},

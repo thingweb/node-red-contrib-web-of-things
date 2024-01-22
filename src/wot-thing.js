@@ -12,6 +12,7 @@ const ModbusClientFactory = require('@node-wot/binding-modbus').ModbusClientFact
 module.exports = function (RED) {
   function consumedThingNode(config) {
     RED.nodes.createNode(this, config)
+    const node = this
 
     this.tdLink = config.tdLink
     this.td = JSON.parse(config.td)
@@ -44,10 +45,16 @@ module.exports = function (RED) {
         servient.addClientFactory(new ModbusClientFactory())
       }
 
-      servient.start().then((thingFactory) => {
-        let consumedThing = thingFactory.consume(this.td)
-        resolve(consumedThing)
-      })
+      servient
+        .start()
+        .then((thingFactory) => {
+          let consumedThing = thingFactory.consume(this.td)
+          resolve(consumedThing)
+        })
+        .catch((err) => {
+          node.error(`[error] failed to start servient. err: ${err.toString()}`)
+          reject(err)
+        })
     })
   }
   RED.nodes.registerType('consumed-thing', consumedThingNode)

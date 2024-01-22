@@ -33,8 +33,16 @@ module.exports = function (RED) {
         let ob
         while (true) {
           try {
+            console.log('***** setup for observe property change')
             ob = await consumedThing.observeProperty(config.property, async (resp) => {
-              const payload = await resp.value()
+              console.log('***** property changed')
+              let payload
+              try {
+                payload = await resp.value()
+              } catch (err) {
+                node.error(`[error] failed to get property change. err: ${err.toString()}`)
+                console.error(`[error] failed to get property change. err: ${err.toString()} resp: `, resp)
+              }
               node.send({ payload, topic: config.topic })
             })
           } catch (err) {
@@ -118,7 +126,7 @@ module.exports = function (RED) {
     }
 
     RED.nodes.getNode(config.thing).consumedThing.then((consumedThing) => {
-      node.on('input', function (msg) {
+      node.on('input', function (msg, send, done) {
         const uriVariables = config.uriVariables ? JSON.parse(config.uriVariables) : undefined
         consumedThing
           .writeProperty(config.property, msg.payload, {
@@ -131,6 +139,7 @@ module.exports = function (RED) {
               shape: 'dot',
               text: 'connected',
             })
+            done()
           })
           .catch((err) => {
             node.warn(err)
@@ -139,6 +148,7 @@ module.exports = function (RED) {
               shape: 'ring',
               text: err.message,
             })
+            done(err)
           })
       })
     })

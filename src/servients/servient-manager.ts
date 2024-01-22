@@ -19,29 +19,30 @@ export default class ServientManager {
     return this.servientWrappers[id]
   }
   public existServienetWrapper(id: string) {
+    console.log('*** this.servientWrappers', this.servientWrappers)
     if (this.servientWrappers[id]) {
       return true
     }
     return false
   }
   public async removeServientWrapper(id: string) {
-    console.log('*** removeServientWrapper')
-    this.endServient(id)
+    console.log('*** removeServientWrapper', id)
+    await this.endServient(id)
     delete this.servientWrappers[id]
   }
 
   private async endServient(id: string) {
     return new Promise<void>(async (resolve, reject) => {
-      console.log('*** call endServient')
+      console.log('*** call endServient', id)
       const servientWrapper = this.servientWrappers[id]
       const timeoutId = setTimeout(() => {
-        console.warn('timeout happend while servient ending.')
-        delete this.servientWrappers[id]
+        console.warn('timeout happend while servient ending.', id)
+        //delete this.servientWrappers[id]
         resolve()
       }, 3000) // 3秒経っても終わらなければ終了扱いとする
-      servientWrapper.endServient()
-      console.log('*** servient finished')
-      delete this.servientWrappers[id]
+      await servientWrapper.endServient()
+      console.log('*** servient finished', id)
+      //delete this.servientWrappers[id]
       clearTimeout(timeoutId)
       resolve()
     })

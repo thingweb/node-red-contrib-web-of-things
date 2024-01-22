@@ -5,11 +5,11 @@
             color: "#a2dea0",
             defaults: {
                 name: {value:""},
-                propertyName: {value:""},
+                propertyName: {value:"", required:true},
                 propertyDescription: {value:""},
-                propertyDataType: {value:"string"},
-                propertyReadOnlyFlag: {value:true},
-                propertyObservableFlag: {value:true},
+                propertyDataType: {value:"string", required:true},
+                propertyReadOnlyFlag: {value:false, required:true},
+                propertyObservableFlag: {value:true, required:true},
                 outParams2_writingValueType: {
                     value: "msg"
                 },
@@ -18,10 +18,12 @@
                 },
                 woTServerConfig: {
                     type: "wot-server-config",
+                    value: "",
                     required: true
                 },
                 woTThingConfig: {
                     type: "wot-thing-config",
+                    value: "",
                     required: true
                 }
             },
@@ -145,9 +147,13 @@
 	<div class="form-row">
 		<label for="node-input-propertyDataType"><span data-i18n="editor.propertyDataTypeLabel"></span></label>
 		<select id="node-input-propertyDataType" data-i18n="[placeholder]editor.propertyDataTypeLabel">
-            <option value="string">文字列(todo:labeling)</option>
-            <option value="integer">整数(todo:labeling)</option>
-            <option value="object">オブジェクト(todo:labeling)</option>
+            <option value="string">string</option>
+            <option value="number">number</option>
+            <option value="integer">integer</option>
+            <option value="boolean">boolean</option>
+            <option value="object">object</option>
+            <option value="array">array</option>
+            <option value="null">null</option>
         </select>
 	</div>
 	<div class="form-row">

@@ -41,17 +41,21 @@ module.exports = function (RED) {
     // inputイベント
     node.on('input', async (msg, send, done) => {
       // configノードを取得
-      const woTServerConfig = RED.nodes.getNode(config.woTServerConfig)
-      console.log('*** servientWrapper', woTServerConfig.servientWrapper)
+      try {
+        const woTServerConfig = RED.nodes.getNode(config.woTServerConfig)
+        console.log('*** servientWrapper', woTServerConfig.servientWrapper)
 
-      console.log('*** woTServerConfig.emitPropertyChange:', config.propertyName)
-      await ServientManager.getInstance()
-        .getThing(woTServerConfig.id, node.getThingName())
-        .emitPropertyChange(config.propertyName)
-      console.log('*** emitPropertyChange finished', config.propertyName)
+        console.log('*** woTServerConfig.emitPropertyChange:', config.propertyName)
+        await ServientManager.getInstance()
+          .getThing(woTServerConfig.id, node.getThingName())
+          .emitPropertyChange(config.propertyName)
+        console.log('*** emitPropertyChange finished', config.propertyName)
 
-      // 変更されたプロパティ値を入力された場合は出力なし
-      done()
+        // 変更されたプロパティ値を入力された場合は出力なし
+        done()
+      } catch (err) {
+        done(err)
+      }
     })
     // closeイベント
     node.on('close', function (removed, done) {

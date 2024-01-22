@@ -9,7 +9,6 @@ module.exports = function (RED) {
     const userNodes = []
     const servientManager = ServientManager.getInstance()
     node.running = false
-    node.thingDescriptions = {}
 
     node.addUserNode = (n) => {
       console.log('*** addUserNode', n)
@@ -162,10 +161,11 @@ module.exports = function (RED) {
         }
       }
       const thingDescription = await servientWrapper.exposeThing(thing)
-      node.thingDescriptions[`${config.name}::${title}`] = thingDescription
-      node.context().global.set('thingDescriptions', node.thingDescriptions)
-      console.log('**** node.thingDescriptions', node.thingDescriptions)
-      console.log('*** servient started')
+      const thingDescriptions = node.context().global.get('thingDescriptions') || {}
+      thingDescriptions[`${config.name}::${title}`] = thingDescription
+      node.context().global.set('thingDescriptions', thingDescriptions)
+      console.log('**** thingDescriptions', thingDescriptions)
+      console.log('*** servient started', `${config.name}::${title}`)
     }
 
     async function launchServient() {
@@ -185,7 +185,7 @@ module.exports = function (RED) {
       const bindingConfig = node.bindingConfig
       console.log('*** createServient', node.id, bindingType, bindingConfig)
       //console.log('*** servientManager', servientManager)
-      if (bindingType !== 'http') return //test
+      //if (bindingType !== 'http') return //test
       const servientWrapper = servientManager.createServientWrapper(node.id, bindingType, bindingConfig)
       try {
         await waitForFinishPrepareRelatedNodes(userNodes, config._users)
@@ -215,20 +215,25 @@ module.exports = function (RED) {
       }
     }
 
-    console.log('*** endServient')
     if (servientManager.existServienetWrapper(node.id)) {
       // すでにservientがあれば終了する
-      servientManager.removeServientWrapper(node.id).then(() => {
-        // servient終了
-        console.log('*** servient ended. config node id: ', config.id)
-        launchServient()
-          .then(() => {
-            node.debug('[info] success to end and launch thing. name: ' + config.name + ' id: ' + config.id)
-          })
-          .catch((err) => {
-            node.error('[error] Failed to launch thing. name: ' + config.name + ' id: ' + config.id + ' err:' + err)
-          })
-      })
+      console.log('*** endServient')
+      servientManager
+        .removeServientWrapper(node.id)
+        .then(() => {
+          // servient終了
+          console.log('*** servient ended. config node id: ', config.id)
+          launchServient()
+            .then(() => {
+              node.debug('[info] success to end and launch thing. name: ' + config.name + ' id: ' + config.id)
+            })
+            .catch((err) => {
+              node.error('[error] Failed to launch thing. name: ' + config.name + ' id: ' + config.id + ' err:' + err)
+            })
+        })
+        .catch((err) => {
+          node.error('[error] Failed to remove server. name: ' + config.name + ' id: ' + config.id + ' err:' + err)
+        })
     } else {
       console.log('*** launch servient.')
       launchServient()

@@ -16,6 +16,9 @@
 
 import { ExposedThing, Servient } from '@node-wot/core'
 import { HttpServer } from '@node-wot/binding-http'
+import { CoapServer } from '@node-wot/binding-coap'
+import { WebSocketServer } from '@node-wot/binding-websockets'
+import { MqttBrokerServer } from '@node-wot/binding-mqtt'
 
 export default class ServientWrapper {
   private servient
@@ -23,14 +26,18 @@ export default class ServientWrapper {
   private started = false
   private server
   private things: { [key: string]: ExposedThing } = {}
-  public constructor(bindingType: string, params: any) {
-    console.log('***** servient constructor called', params)
+  public constructor(bindingType: string, config: any) {
+    console.log('***** servient constructor called', config)
     // create Servient add HTTP binding with port configuration
     this.servient = new Servient()
     if (bindingType === 'http') {
-      this.server = new HttpServer(params)
+      this.server = new HttpServer(config)
+    } else if (bindingType === 'websocket') {
+      this.server = new WebSocketServer(config)
     } else if (bindingType === 'coap') {
-      //TODO
+      this.server = new CoapServer(config)
+    } else if (bindingType === 'mqtt') {
+      this.server = new MqttBrokerServer(config)
     }
     this.servient.addServer(this.server)
   }

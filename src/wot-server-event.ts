@@ -39,27 +39,31 @@ module.exports = function (RED) {
     // inputイベント
     node.on('input', async (msg, send, done) => {
       // configノードを取得
-      const woTServerConfig = RED.nodes.getNode(config.woTServerConfig)
-      console.log('*** servientWrapper', woTServerConfig.servientWrapper)
+      try {
+        const woTServerConfig = RED.nodes.getNode(config.woTServerConfig)
+        console.log('*** servientWrapper', woTServerConfig.servientWrapper)
 
-      // 入力パラメータを取得
-      node.inParams_eventValue = node.credentials.inParams_eventValue
-      if (config.inParams_eventValueConstValue && config.inParams_eventValueType) {
-        node.inParams_eventValue = RED.util.evaluateNodeProperty(
-          config.inParams_eventValueConstValue,
-          config.inParams_eventValueType,
-          node,
-          msg
-        )
+        // 入力パラメータを取得
+        node.inParams_eventValue = node.credentials.inParams_eventValue
+        if (config.inParams_eventValueConstValue && config.inParams_eventValueType) {
+          node.inParams_eventValue = RED.util.evaluateNodeProperty(
+            config.inParams_eventValueConstValue,
+            config.inParams_eventValueType,
+            node,
+            msg
+          )
+        }
+        console.log('node.inParams_eventValue:', node.inParams_eventValue)
+        await ServientManager.getInstance()
+          .getThing(woTServerConfig.id, node.getThingName())
+          .emitEvent(config.eventName, node.inParams_eventValue)
+        console.log('*** emitEvent finished')
+
+        // イベント通知の場合は出力なし
+        done()
+      } catch (err) {
+        done(err)
       }
-      console.log('node.inParams_eventValue:', node.inParams_eventValue)
-      await ServientManager.getInstance()
-        .getThing(woTServerConfig.id, node.getThingName())
-        .emitEvent(config.eventName, node.inParams_eventValue)
-      console.log('*** emitEvent finished')
-
-      // イベント通知の場合は出力なし
-      done()
     })
     // closeイベント
     node.on('close', function (removed, done) {

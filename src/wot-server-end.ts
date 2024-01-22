@@ -7,18 +7,22 @@ module.exports = function (RED) {
     node.on('input', async (msg, send, done) => {
       console.log('*** wot-server-end input msg', msg)
       // 入力パラメータを取得
-      node.inParams_returnValue = node.credentials.inParams_returnValue
-      if (config.inParams_returnValueConstValue && config.inParams_returnValueType) {
-        node.inParams_returnValue = RED.util.evaluateNodeProperty(
-          config.inParams_returnValueConstValue,
-          config.inParams_returnValueType,
-          node,
-          msg
-        )
+      try {
+        node.inParams_returnValue = node.credentials.inParams_returnValue
+        if (config.inParams_returnValueConstValue && config.inParams_returnValueType) {
+          node.inParams_returnValue = RED.util.evaluateNodeProperty(
+            config.inParams_returnValueConstValue,
+            config.inParams_returnValueType,
+            node,
+            msg
+          )
+        }
+        console.log('node.inParams_returnValue:', node.inParams_returnValue)
+        msg._wot?.finish(node.inParams_returnValue)
+        done()
+      } catch (err) {
+        done(err)
       }
-      console.log('node.inParams_returnValue:', node.inParams_returnValue)
-      msg._wot?.finish(node.inParams_returnValue)
-      done()
     })
     // closeイベント
     node.on('close', function (removed, done) {

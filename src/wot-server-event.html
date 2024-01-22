@@ -5,9 +5,9 @@
             color: "#a2dea0",
             defaults: {
                 name: {value:""},
-                eventName: {value:""},
+                eventName: {value:"", required:true},
                 eventDescription: {value:""},
-                eventDataType: {value:"string"},
+                eventDataType: {value:"string", required:true},
                 inParams_eventValueType: {
                     value: "msg"
                 },
@@ -16,10 +16,12 @@
                 },
                 woTServerConfig: {
                     type: "wot-server-config",
+                    value: "",
                     required: true
                 },
                 woTThingConfig: {
                     type: "wot-thing-config",
+                    value: "",
                     required: true
                 }
             },
@@ -139,9 +141,13 @@
 	<div class="form-row">
 		<label for="node-input-eventDataType"><span data-i18n="editor.eventDataTypeLabel"></span></label>
 		<select id="node-input-eventDataType" data-i18n="[placeholder]editor.eventDataTypeLabel">
-            <option value="string">文字列(todo:labeling)</option>
-            <option value="integer">整数(todo:labeling)</option>
-            <option value="object">オブジェクト(todo:labeling)</option>
+            <option value="string">string</option>
+            <option value="number">number</option>
+            <option value="integer">integer</option>
+            <option value="boolean">boolean</option>
+            <option value="object">object</option>
+            <option value="array">array</option>
+            <option value="null">null</option>
         </select>
 	</div>
     <!-- end event properties -->

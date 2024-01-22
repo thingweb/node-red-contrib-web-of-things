@@ -62,7 +62,7 @@
                 if (thingID) {
                     RED.nodes.eachConfig((config) => {
                         if (config.id === thingID && config.td) {
-                            let properties = JSON.parse(config.td).properties;
+                            let properties = JSON.parse(config.td).properties || {};
                             if (properties[property] && properties[property].observable) {
                                 $("div#property-observe").show();
                             } else {
@@ -86,7 +86,7 @@
                     RED.nodes.eachConfig((config) => {
                         if (config.id === thingID && config.td) {
                             // parse TD
-                            let properties = JSON.parse(config.td).properties
+                            let properties = JSON.parse(config.td).properties || {}
                             // delete old properties
                             let select = document.getElementById("node-input-property");
                             while (select.firstChild) select.removeChild(select.firstChild);
@@ -208,7 +208,7 @@
                     RED.nodes.eachConfig((config) => {
                         if (config.id === thingID && config.td) {
                             // parse TD
-                            let properties = JSON.parse(config.td).properties
+                            let properties = JSON.parse(config.td).properties || {}
                             // delete old properties
                             let select = document.getElementById("node-input-property");
                             while (select.firstChild) select.removeChild(select.firstChild);

@@ -5,10 +5,11 @@
             color: "#a2dea0",
             defaults: {
                 name: {value:""},
-                actionName: {value:""},
+
+                actionName: {value:"", required:true},
                 actionDescription: {value:""},
-                actionInputDataType: {value:"string"},
-                actionOutputDataType: {value:"string"},
+                actionInputDataType: {value:"string", required:true},
+                actionOutputDataType: {value:"string", required:true},
                 outParams1_actionArgsType: {
                     value: "msg"
                 },
@@ -17,10 +18,12 @@
                 },
                 woTServerConfig: {
                     type: "wot-server-config",
+                    value: "",
                     required: true
                 },
                 woTThingConfig: {
                     type: "wot-thing-config",
+                    value: "",
                     required: true
                 }
             },
@@ -145,17 +148,25 @@
 	<div class="form-row">
 		<label for="node-input-actionInputDataType"><span data-i18n="editor.actionInputDataTypeLabel"></span></label>
 		<select id="node-input-actionInputDataType" data-i18n="[placeholder]editor.actionInputDataTypeLabel">
-            <option value="string">文字列(todo:labeling)</option>
-            <option value="integer">整数(todo:labeling)</option>
-            <option value="object">オブジェクト(todo:labeling)</option>
+            <option value="string">string</option>
+            <option value="number">number</option>
+            <option value="integer">integer</option>
+            <option value="boolean">boolean</option>
+            <option value="object">object</option>
+            <option value="array">array</option>
+            <option value="null">null</option>
         </select>
 	</div>
 	<div class="form-row">
 		<label for="node-input-actionOutputDataType"><span data-i18n="editor.actionOutputDataTypeLabel"></span></label>
 		<select id="node-input-actionOutputDataType" data-i18n="[placeholder]editor.actionOutputDataTypeLabel">
-            <option value="string">文字列(todo:labeling)</option>
-            <option value="integer">整数(todo:labeling)</option>
-            <option value="object">オブジェクト(todo:labeling)</option>
+            <option value="string">string</option>
+            <option value="number">number</option>
+            <option value="integer">integer</option>
+            <option value="boolean">boolean</option>
+            <option value="object">object</option>
+            <option value="array">array</option>
+            <option value="null">null</option>
         </select>
 	</div>
     <!-- end property properties -->
