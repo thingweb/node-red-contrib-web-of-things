@@ -69,8 +69,6 @@ module.exports = function (RED) {
     })
 
     const woTServerConfig = RED.nodes.getNode(config.woTServerConfig) //test
-    //console.log('*** RED', RED)
-    //console.log('*** RED.nodes', RED.nodes)
     woTServerConfig?.addUserNode(node)
     console.log('*** addUserNode finished.', node.id)
   }

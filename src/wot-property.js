@@ -41,7 +41,7 @@ module.exports = function (RED) {
                 payload = await resp.value()
               } catch (err) {
                 node.error(`[error] failed to get property change. err: ${err.toString()}`)
-                console.error(`[error] failed to get property change. err: ${err.toString()} resp: `, resp)
+                console.error(`[error] failed to get property change. err:`, err)
               }
               node.send({ payload, topic: config.topic })
             })
@@ -70,13 +70,22 @@ module.exports = function (RED) {
           })()
         }
       } else {
+        console.log('*** observe false', config.property)
         this.interval_id = setInterval(
           (function readProperty() {
+            console.log('*** observe false readProperty', config.property)
             const uriVariables = config.uriVariables ? JSON.parse(config.uriVariables) : undefined
             consumedThing
               .readProperty(config.property, { uriVariables: uriVariables })
               .then(async (resp) => {
-                const payload = await resp.value()
+                console.log('*** observe false readProperty then', config.property)
+                let payload
+                try {
+                  payload = await resp.value()
+                } catch (err) {
+                  node.error(`[error] failed to get value. name: ${config.property}, error: ${err.toString()}`)
+                  console.error(`[error] failed to get value. name: ${config.property}, error: `, err.toString())
+                }
                 node.send({ payload, topic: config.topic })
                 node.status({
                   fill: 'green',
@@ -85,6 +94,7 @@ module.exports = function (RED) {
                 })
               })
               .catch((err) => {
+                console.log('*** observe false readProperty catch', config.property)
                 node.warn(err)
                 node.status({
                   fill: 'red',

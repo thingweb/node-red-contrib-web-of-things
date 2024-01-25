@@ -33,7 +33,7 @@ module.exports = function (RED) {
                       payload = await resp.value()
                     } catch (err) {
                       node.error(`[error] failed to get event. err: ${err.toString()}`)
-                      console.error(`[error] failed to get event. err: ${err.toString()} resp: `, resp)
+                      console.error(`[error] failed to get event. err: `, err)
                     }
                     node.send({ payload, topic: config.topic })
                   }

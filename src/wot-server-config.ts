@@ -7,6 +7,9 @@ module.exports = function (RED) {
     RED.nodes.createNode(this, config)
     const node = this
     const userNodes = []
+    // globalContextのthingDescriptionsを削除(configノードを消した場合に残り続けることを避けるため)
+    // ここで削除するとタイミング的に、globalContextに追加された、削除されてはいけないthingDescriptionが削除される恐れあり
+    node.context().global.set('thingDescriptions', {})
     const servientManager = ServientManager.getInstance()
     node.running = false
 
@@ -229,6 +232,10 @@ module.exports = function (RED) {
             })
             .catch((err) => {
               node.error('[error] Failed to launch thing. name: ' + config.name + ' id: ' + config.id + ' err:' + err)
+              console.error(
+                '[error] Failed to launch thing. name: ' + config.name + ' id: ' + config.id + ' err: ',
+                err
+              )
             })
         })
         .catch((err) => {
@@ -242,6 +249,7 @@ module.exports = function (RED) {
         })
         .catch((err) => {
           node.error('[error] Failed to launch thing. name: ' + config.name + ' id: ' + config.id + ' err:' + err)
+          console.error('[error] Failed to launch thing. name: ' + config.name + ' id: ' + config.id + ' err: ', err)
         })
     }
   }
