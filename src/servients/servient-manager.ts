@@ -39,7 +39,7 @@ export default class ServientManager {
         console.warn('timeout happend while servient ending.', id)
         //delete this.servientWrappers[id]
         resolve()
-      }, 30000) // 30秒経っても終わらなければ終了扱いとする
+      }, 10000) // 10秒経っても終わらなければ終了扱いとする
       await servientWrapper.endServient()
       console.log('*** servient finished', id)
       //delete this.servientWrappers[id]
