@@ -114,7 +114,7 @@ Here's an example of a flow:
 ![Server Flow Example](./screenshots/server-flow-example.png)
 
 The Thing Description required when the client uses a Thing is set in the thingDescriptions object of the global context. The member name is `<server name>::<Thing name>`.
-If you want to check the Thing Description, open the context tab of Node-RED editor and press the refresh icon of the Global context to display it.
+If you want to check the Thing Description, open the Context Data tab of Node-RED editor and press the refresh icon of the Global context to display it.
 
 ![Reference TD](./screenshots/reference-td.png)
 
