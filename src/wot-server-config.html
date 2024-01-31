@@ -46,7 +46,6 @@
                 }, this)
 
                BINDING_TYPE_LIST.forEach((type) => {
-                    console.log("*** bindingType", type)
                     $("#node-config-input-bindingType").append(`<option value="${type}">${type}</option>`)
                 })
 
@@ -54,7 +53,6 @@
 
                 $("#node-config-input-bindingType").on("change", () => {
                     const selectedBindingType = $("#node-config-input-bindingType").val()
-                    console.log("*** selectedBindingType", selectedBindingType)
                     if(selectedBindingType === this.bindingType && this.bindingConfigConstValue !== "{}") {
                         $("#node-config-input-bindingConfig").typedInput("value", this.bindingConfigConstValue)
                     } else {

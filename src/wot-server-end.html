@@ -46,7 +46,6 @@
                     label: this._('editor.inParams.tabLabel'),
                 });
 
-                // 入力パラメータの指定項目作成
                 prepareInOutParamSetting("inParams", {
                     name:"returnValue",
                     types: ["msg"],
@@ -104,7 +103,6 @@
 
 </script>
 
-<!-- ノード編集画面テンプレート -->
 <script type="text/html" data-template-name="wot-server-end">
 
 	<div class="form-row">
@@ -119,7 +117,6 @@
     </div>
     <!-- Tab contents -->
     <div id="tabs-content" style="min-height:250px;">
-        <!-- 入力パラメータ指定 -->
         <div id="tab-inParams-settings">
             <div class='form-row'>
                 <label for='node-input-inParams_returnValue'><span data-i18n="editor.inParams.returnValue.label"></span></label>

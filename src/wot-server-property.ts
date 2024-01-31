@@ -5,10 +5,8 @@ module.exports = function (RED) {
     RED.nodes.createNode(this, config)
     const node = this
     node.status({ fill: 'red', shape: 'dot', text: 'not prepared' })
-    console.log('*** this', this)
-    console.log('*** config', config)
 
-    // WoTServerConfigノードからプロパティの定義を取得する際に呼び出す
+    // for wot-server-config
     node.getProps = () => {
       return {
         attrType: 'properties',
@@ -23,7 +21,6 @@ module.exports = function (RED) {
       }
     }
 
-    // statusを変更
     node.setServientStatus = (running: boolean) => {
       if (running) {
         node.status({ fill: 'green', shape: 'dot', text: 'running' })
@@ -32,45 +29,39 @@ module.exports = function (RED) {
       }
     }
 
-    // thing名の取得
+    // for wot-server-config
     node.getThingName = () => {
       const woTThingConfig = RED.nodes.getNode(config.woTThingConfig)
       return woTThingConfig.getThingName()
     }
 
-    // inputイベント
     node.on('input', async (msg, send, done) => {
-      // configノードを取得
       try {
         const woTServerConfig = RED.nodes.getNode(config.woTServerConfig)
-        console.log('*** servientWrapper', woTServerConfig.servientWrapper)
 
-        console.log('*** woTServerConfig.emitPropertyChange:', config.propertyName)
         await ServientManager.getInstance()
           .getThing(woTServerConfig.id, node.getThingName())
           .emitPropertyChange(config.propertyName)
-        console.log('*** emitPropertyChange finished', config.propertyName)
+        console.debug('[debug] emitPropertyChange finished. propertyName: ', config.propertyName)
 
-        // 変更されたプロパティ値を入力された場合は出力なし
+        // No output if changed property value is entered
         done()
       } catch (err) {
         done(err)
       }
     })
-    // closeイベント
+
     node.on('close', function (removed, done) {
       if (removed) {
         // This node has been disabled/deleted
       } else {
         // This node is being restarted
       }
-      // 処理終了通知
       done()
     })
 
     const woTServerConfig = RED.nodes.getNode(config.woTServerConfig) //test
     woTServerConfig?.addUserNode(node)
-    console.log('*** addUserNode finished.', node.id)
   }
   RED.nodes.registerType('wot-server-property', WoTServerProperty, {
     credentials: {

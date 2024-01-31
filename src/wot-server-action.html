@@ -51,7 +51,6 @@
             },
             oneditprepare: function() {
                 console.log("node oneditprepare")
-                // Tab
                 const tabs = RED.tabs.create({
                         id: 'red-tabs',
                         onchange(tab) {
@@ -65,7 +64,6 @@
                     id: 'tab-outParams1-settings',
                     label: this._('editor.outParams1.tabLabel'),
                 });
-                // 出力パラメータの指定項目作成
                 prepareInOutParamSetting("outParams1", {
                     name: "actionArgs",
                     types: ["msg"],
@@ -122,14 +120,12 @@
 
 </script>
 
-<!-- ノード編集画面テンプレート -->
 <script type="text/html" data-template-name="wot-server-action">
 
 	<div class="form-row">
 		<label for="node-input-name"><span data-i18n="editor.nameLabel"></span></label>
 		<input type="text" id="node-input-name" data-i18n="[placeholder]editor.nameLabel">
 	</div>
-    <!-- start config -->
     <div class='form-row'>
         <label for='node-input-woTServerConfig' style='font-size: 95%;'><span data-i18n="editor.serverConfigLabel"></label>
         <input required type='url' id='node-input-woTServerConfig' placeholder='[placeholder]editor.serverConfigLabel'>
@@ -138,9 +134,7 @@
         <label for='node-input-woTThingConfig' style='font-size: 95%;'><span data-i18n="editor.thingConfigLabel"></label>
         <input required type='url' id='node-input-woTThingConfig' placeholder='[placeholder]editor.thingConfigLabel'>
     </div>
-    <!-- end config -->
 
-    <!-- start property properties -->
 	<div class="form-row">
 		<label for="node-input-actionName"><span data-i18n="editor.actionNameLabel"></span></label>
 		<input type="text" id="node-input-actionName" data-i18n="[placeholder]editor.actionNameLabel">
@@ -169,7 +163,6 @@
             <option value="null">null</option>
         </select>
 	</div>
-    <!-- end property properties -->
 
     <!-- Tab -->
     <div class="form-row">
@@ -178,7 +171,6 @@
     </div>
     <!-- Tab contents -->
     <div id="tabs-content" style="min-height:250px;">
-        <!-- 出力パラメータ指定 -->
         <div id="tab-outParams1-settings">
             <div class='form-row'>
                 <label for='node-input-outParams1_writingValue'><span data-i18n="editor.outParams1.actionArgs.label"></span></label>

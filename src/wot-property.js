@@ -25,15 +25,13 @@ module.exports = function (RED) {
       if (config.observe === false) {
         return
       }
-      // observePropertyが成功するまで繰り返す
+      // Repeat until observeProperty succeeds.
       let ob
       while (true) {
         try {
-          console.log('***** setup for observe property change')
           ob = await consumedThing.observeProperty(
             config.property,
             async (resp) => {
-              console.log('***** property changed')
               let payload
               try {
                 payload = await resp.value()
@@ -79,7 +77,6 @@ module.exports = function (RED) {
       }
     })
 
-    // inputイベント
     node.on('input', async (msg, send, done) => {
       if (!consumedThing) {
         node.error('[error] consumedThing is not defined.')

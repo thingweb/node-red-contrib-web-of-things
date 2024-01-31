@@ -58,7 +58,6 @@
                     label: this._('editor.inParams.tabLabel'),
                 });
 
-                // 入力パラメータの指定項目作成
                 prepareInOutParamSetting("inParams", {
                     name:"eventValue",
                     types: ["msg"],
@@ -115,14 +114,12 @@
 
 </script>
 
-<!-- ノード編集画面テンプレート -->
 <script type="text/html" data-template-name="wot-server-event">
 
 	<div class="form-row">
 		<label for="node-input-name"><span data-i18n="editor.nameLabel"></span></label>
 		<input type="text" id="node-input-name" data-i18n="[placeholder]editor.nameLabel">
 	</div>
-    <!-- start config -->
     <div class='form-row'>
         <label for='node-input-woTServerConfig' style='font-size: 95%;'><span data-i18n="editor.serverConfigLabel"></label>
         <input required type='url' id='node-input-woTServerConfig' placeholder='[placeholder]editor.serverConfigLabel'>
@@ -131,9 +128,7 @@
         <label for='node-input-woTThingConfig' style='font-size: 95%;'><span data-i18n="editor.thingConfigLabel"></label>
         <input required type='url' id='node-input-woTThingConfig' placeholder='[placeholder]editor.thingConfigLabel'>
     </div>
-    <!-- end config -->
 
-    <!-- start event properties -->
 	<div class="form-row">
 		<label for="node-input-eventName"><span data-i18n="editor.eventNameLabel"></span></label>
 		<input type="text" id="node-input-eventName" data-i18n="[placeholder]editor.eventNameLabel">
@@ -150,7 +145,6 @@
             <option value="null">null</option>
         </select>
 	</div>
-    <!-- end event properties -->
 
     <!-- Tab -->
     <div class="form-row">
@@ -159,7 +153,6 @@
     </div>
     <!-- Tab contents -->
     <div id="tabs-content" style="min-height:250px;">
-        <!-- 入力パラメータ指定 -->
         <div id="tab-inParams-settings">
             <div class='form-row'>
                 <label for='node-input-inParams_eventValue'><span data-i18n="editor.inParams.eventValue.label"></span></label>

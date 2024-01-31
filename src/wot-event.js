@@ -20,7 +20,7 @@ module.exports = function (RED) {
       .getNode(config.thing)
       .consumedThing.then(async (consumedThing) => {
         let subscription
-        // イベントのサブスクリプションが成功するまで繰り返す
+        // Repeat until event subscription succeeds.
         try {
           while (true) {
             subscription = await consumedThing
@@ -53,8 +53,8 @@ module.exports = function (RED) {
                   })
                 },
                 () => {
-                  console.error('[warn] subscribe ended.')
-                  node.warn('Subscription ended.')
+                  console.error('[warn] Subscription ended.')
+                  node.warn('[warn] Subscription ended.')
                   node.status({})
                   node.subscription = undefined
                 }
@@ -62,7 +62,6 @@ module.exports = function (RED) {
               .catch((err) => {
                 console.warn('[warn] event subscribe error. try again. error: ' + err)
               })
-            console.log('*** subscription', subscription)
             if (subscription) {
               break
             }
@@ -80,7 +79,7 @@ module.exports = function (RED) {
             shape: 'ring',
             text: 'Subscription error',
           })
-          node.error(`[error] failed to subscribe events. err: ${err.toString()}`)
+          node.error(`[error] failed to subscribe events. error: ${err.toString()}`)
         }
         node.subscription = subscription
 

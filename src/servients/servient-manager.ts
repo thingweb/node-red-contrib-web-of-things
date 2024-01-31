@@ -1,6 +1,5 @@
 import ServientWrapper from './servient-wrapper'
 
-// servientのインスタンスを管理する
 export default class ServientManager {
   private servientWrappers: { [key: string]: ServientWrapper } = {}
   private static instance: ServientManager
@@ -11,38 +10,35 @@ export default class ServientManager {
     return ServientManager.instance
   }
   private constructor() {
-    console.log('*** ServientManager constructor called')
+    console.debug('[debug] ServientManager constructor called.')
   }
   public createServientWrapper(id: string, bindingType: string, params: any): ServientWrapper {
-    console.log('*** createServientWrapper', id, bindingType, params)
+    console.debug('[debug] createServientWrapper. ', id, bindingType, params)
     this.servientWrappers[id] = new ServientWrapper(bindingType, params)
     return this.servientWrappers[id]
   }
   public existServienetWrapper(id: string) {
-    console.log('*** this.servientWrappers', this.servientWrappers)
     if (this.servientWrappers[id]) {
       return true
     }
     return false
   }
   public async removeServientWrapper(id: string) {
-    console.log('*** removeServientWrapper', id)
+    console.debug('[debug] removeServientWrapper. id: ', id)
     await this.endServient(id)
     delete this.servientWrappers[id]
   }
 
   private async endServient(id: string) {
     return new Promise<void>(async (resolve, reject) => {
-      console.log('*** call endServient', id)
+      console.debug('[debug] call endServient. id: ', id)
       const servientWrapper = this.servientWrappers[id]
       const timeoutId = setTimeout(() => {
-        console.warn('timeout happend while servient ending.', id)
-        //delete this.servientWrappers[id]
+        console.warn('[warn] timeout happend while servient ending.', id)
         resolve()
-      }, 10000) // 10秒経っても終わらなければ終了扱いとする
+      }, 10000) // If it does not end after 10 seconds, it is considered to be finished.
       await servientWrapper.endServient()
-      console.log('*** servient finished', id)
-      //delete this.servientWrappers[id]
+      console.debug('[debug] servient ended. id: ', id)
       clearTimeout(timeoutId)
       resolve()
     })

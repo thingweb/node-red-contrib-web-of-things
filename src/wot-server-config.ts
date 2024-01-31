@@ -7,30 +7,25 @@ module.exports = function (RED) {
     RED.nodes.createNode(this, config)
     const node = this
     const userNodes = []
-    // globalContextのthingDescriptionsを削除(configノードを消した場合に残り続けることを避けるため)
-    // ここで削除するとタイミング的に、globalContextに追加された、削除されてはいけないthingDescriptionが削除される恐れあり
+    // Delete thingDescriptions in globalContext (to avoid having them remain if the wot-server-config node is deleted)
+    // Deleting them here may cause the deletion of thingsDescriptions added to globalContext that should not be deleted, due to timing.
     node.context().global.set('thingDescriptions', {})
     const servientManager = ServientManager.getInstance()
     node.running = false
 
     node.addUserNode = (n) => {
-      console.log('*** addUserNode', n)
       n.setServientStatus(node.running)
       const foundUserNodes = userNodes.filter((userNode) => userNode.id === n.id)
-      console.log('*** foundUserNodes.length', foundUserNodes.length)
       if (foundUserNodes.length === 0) {
-        console.log('*** addUserNode executed')
         userNodes.push(n)
       }
     }
 
     async function waitForFinishPrepareRelatedNodes(userNodes: any[], userNodeIds: string[]) {
-      console.log('*** userNodeIds', userNodeIds)
-      console.log('*** userNodes', userNodes)
       const MAX_CHECK_COUNT = 50
       const WAIT_MILLI_SEC = 100 //ms
       for (let i = 0; i < MAX_CHECK_COUNT; i++) {
-        // 全てのユーザノードがそろっているか確認
+        // Confirm that all user nodes have been added
         let prepareAllNodesFlg = true
         for (const id of userNodeIds) {
           let foundFlg = false
@@ -40,14 +35,13 @@ module.exports = function (RED) {
             }
           }
           if (!foundFlg) {
-            // ユーザノードに一致するノードが存在していなければfalseを返す
-            console.log('*** foundFlg', foundFlg)
+            // Returns false if no matching user node exists
             prepareAllNodesFlg = false
             break
           }
         }
         if (prepareAllNodesFlg) {
-          // ノードが揃ったため処理終了
+          // End because all nodes have been added
           return
         }
         // wait
@@ -64,11 +58,8 @@ module.exports = function (RED) {
 
     async function registerPropertiesProcess(userNode: any, thing: ExposedThing, props: any) {
       thing.setPropertyReadHandler(props.name, () => {
-        console.log('*** call propertyReadHandler')
-        console.log('*** userNodes.length', userNodes.length)
         return new Promise<any>((resolve, reject) => {
           const finish = (payload) => {
-            console.log('*** finish', payload)
             resolve(payload)
           }
           userNode.send([
@@ -82,13 +73,9 @@ module.exports = function (RED) {
       if (!props.content.readOnly) {
         thing.setPropertyWriteHandler(props.name, async (value: any) => {
           const v = await value.value()
-          console.log('*** call propertyWriteHandler', v)
-          console.log('*** userNodes.length', userNodes.length)
           return new Promise<void>((resolve, reject) => {
             const finish = (payload) => {
-              console.log('*** finish', props)
               if (props.content.observable) {
-                console.log('*** emitPropertyChange', props.name)
                 thing
                   .emitPropertyChange(props.name)
                   .then(() => {
@@ -96,14 +83,13 @@ module.exports = function (RED) {
                   })
                   .catch((err) => {
                     node.error(`[error] emit property change error. error: ${err.toString()}`)
-                    node.error(`[error] emit property change error. error: `, err)
+                    console.error(`[error] emit property change error. error: `, err)
                     reject(err)
                   })
               } else {
                 resolve()
               }
             }
-            console.log('*** userNode', userNode)
             userNode.send([
               null,
               {
@@ -119,14 +105,10 @@ module.exports = function (RED) {
     async function registerActionsProcess(userNode: any, thing: ExposedThing, props: any) {
       thing.setActionHandler(props.name, async (params) => {
         const args = await params.value()
-        console.log('*** call actionHandler')
-        console.log('*** actionHandler userNodes.length', userNodes.length)
         return new Promise<any>((resolve, reject) => {
           const finish = (payload) => {
-            console.log('*** actionHandler finish', props, payload)
             resolve(payload)
           }
-          console.log('*** actionHandler userNode', userNode)
           userNode.send({
             _wot: { finish },
             [props.outputArgs]: args,
@@ -141,27 +123,23 @@ module.exports = function (RED) {
       servientWrapper: ServientWrapper,
       userNodes: any[]
     ) {
-      // TDを作成
+      // create TD
       let td = { title, description }
       let thingName
       for (const userNode of userNodes) {
         const props = userNode.getProps()
-        console.log('*** props', props)
         td[props.attrType] = {
           ...td[props.attrType],
           [props.name]: props.content,
         }
         thingName = userNode.getThingName()
       }
-      console.log('*** thingNamae', thingName)
-      console.log('*** created td', td)
       const thing = await servientWrapper.createThing(td, thingName)
-      console.log('*** thing', thing)
-      // 処理を行うために対応するノードにメッセージ送信
+      // get elements of TD from each node
       for (const userNode of userNodes) {
         const props = userNode.getProps()
-        console.log('*** props', props)
         if (!props.name) {
+          node.warn(`[warn] Not enough settings for td. props.name not specified.`)
           console.warn('[warn] Not enough settings for td. props: ', props)
           continue
         }
@@ -177,14 +155,11 @@ module.exports = function (RED) {
       const thingDescriptions = node.context().global.get('thingDescriptions') || {}
       thingDescriptions[`${config.name}::${title}`] = thingDescription
       node.context().global.set('thingDescriptions', thingDescriptions)
-      console.log('**** thingDescriptions', thingDescriptions)
-      console.log('*** servient started', `${config.name}::${title}`)
+      console.debug(`[info] servient started. ${config.name}::${title}`)
     }
 
     async function launchServient() {
       node.bindingType = node.credentials.bindingType
-      console.log('***** thing config', config)
-      console.log('***** thing node', node)
       if (config.bindingConfigConstValue && config.bindingConfigType) {
         node.bindingConfig = RED.util.evaluateNodeProperty(
           config.bindingConfigConstValue,
@@ -193,27 +168,21 @@ module.exports = function (RED) {
         )
       }
 
-      // Thingの生成
+      // create thing
       const bindingType = config.bindingType
       const bindingConfig = node.bindingConfig
-      console.log('*** createServient', node.id, bindingType, bindingConfig)
-      //console.log('*** servientManager', servientManager)
-      //if (bindingType !== 'http') return //test
+      console.debug('[debug] createServient ', node.id, bindingType, bindingConfig)
       const servientWrapper = servientManager.createServientWrapper(node.id, bindingType, bindingConfig)
       try {
         await waitForFinishPrepareRelatedNodes(userNodes, config._users)
-        // servientの起動
         await servientWrapper.startServient()
-        // ThingNameの一覧を作成
+        // make thing name list
         const thingNamesObj = {}
-        console.log('*** userNodes', userNodes)
         for (const userNode of userNodes) {
-          console.log('*** userNode.getThingName', userNode.getThingName())
           thingNamesObj[userNode.getThingName()] = true
         }
         const thingNames = Object.keys(thingNamesObj)
-        console.log('*** thingNames', thingNames)
-        // Thing名毎にThingの生成とExposeを実施
+        // Generate and Expose a Thing for each Thing name
         for (const thingName of thingNames) {
           const targetNodes = userNodes.filter((n) => n.getThingName() === thingName)
           await createWoTScriptAndExpose(thingName, '', servientWrapper, targetNodes)
@@ -223,22 +192,21 @@ module.exports = function (RED) {
           n.setServientStatus(node.running)
         })
       } catch (err) {
-        //console.error('[error] ' + err)
         throw err
       }
     }
 
     if (servientManager.existServienetWrapper(node.id)) {
-      // すでにservientがあれば終了する
-      console.log('*** endServient')
+      // Exit if already servient.
+      console.debug('[debug] endServient. node.id: ', node.id)
       servientManager
         .removeServientWrapper(node.id)
         .then(() => {
-          // servient終了
-          console.log('*** servient ended. config node id: ', config.id)
+          // end servient
+          console.debug('[debug] servient ended. config.id: ', config.id)
           launchServient()
             .then(() => {
-              node.debug('[info] success to end and launch thing. name: ' + config.name + ' id: ' + config.id)
+              node.debug('[debug] success to end and launch thing. name: ' + config.name + ' id: ' + config.id)
             })
             .catch((err) => {
               node.error('[error] Failed to launch thing. name: ' + config.name + ' id: ' + config.id + ' err:' + err)
@@ -249,10 +217,11 @@ module.exports = function (RED) {
             })
         })
         .catch((err) => {
-          node.error('[error] Failed to remove server. name: ' + config.name + ' id: ' + config.id + ' err:' + err)
+          node.error('[error] failed to remove server. name: ' + config.name + ' id: ' + config.id + ' err: ' + err)
+          console.error('[error] failed to remove server. name: ' + config.name + ' id: ' + config.id + ' err: ', err)
         })
     } else {
-      console.log('*** launch servient.')
+      console.debug('[debug] launch servient. node.id: ', node.id)
       launchServient()
         .then(() => {
           node.debug('[info] success to launch thing. name: ' + config.name + ' id: ' + config.id)
