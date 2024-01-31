@@ -1,31 +1,13 @@
 {
   "editor": {
+    "paletteLabel": "Server-End",
     "nameLabel": "Name",
-    "configLabel": "thing config",
-    "paletteLabel": "WoT End",
-    "thingConfig": {
-      "tabLabel": "Config",
-      "thingName": {
-        "label": "Thing Name",
-        "description": "Thing Name Description.",
-        "placeholder": "Thing Name"
-      }
-    },
     "inParams": {
       "tabLabel": "Input",
-      "propertyName": {
-        "label": "Thing Name",
-        "description": "Thing Name Description.",
-        "placeholder": "Thing Name"
-      }
-    },
-    "outParams1": {
-      "tabLabel": "Output",
-      "outputLabel": "Output",
-      "output1": {
-        "label": "Output Parameter1",
-        "description": "Output Parameter1 description.",
-        "placeholder": "Output Parameter1"
+      "returnValue": {
+        "label": "Return value source",
+        "description": "Return value source.",
+        "placeholder": "Return value source"
       }
     }
   }

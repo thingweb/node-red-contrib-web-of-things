@@ -30,17 +30,29 @@ module.exports = function (RED) {
       while (true) {
         try {
           console.log('***** setup for observe property change')
-          ob = await consumedThing.observeProperty(config.property, async (resp) => {
-            console.log('***** property changed')
-            let payload
-            try {
-              payload = await resp.value()
-            } catch (err) {
-              node.error(`[error] failed to get property change. err: ${err.toString()}`)
-              console.error(`[error] failed to get property change. err:`, err)
+          ob = await consumedThing.observeProperty(
+            config.property,
+            async (resp) => {
+              console.log('***** property changed')
+              let payload
+              try {
+                payload = await resp.value()
+              } catch (err) {
+                node.error(`[error] failed to get property change. err: ${err.toString()}`)
+                console.error(`[error] failed to get property change. err:`, err)
+              }
+              node.send({ payload, topic: config.topic })
+            },
+            (err) => {
+              node.error(`[error] property observe error. error: ${err.toString()}`)
+              console.error(`[error] property observe error. error: `, err)
+              node.status({
+                fill: 'red',
+                shape: 'ring',
+                text: 'Observe error',
+              })
             }
-            node.send({ payload, topic: config.topic })
-          })
+          )
         } catch (err) {
           console.warn('[warn] property observe error. try again. error: ' + err)
           node.status({

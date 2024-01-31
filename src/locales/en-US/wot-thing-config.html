@@ -1,19 +1,16 @@
 <script type="text/html" data-help-name="wot-thing-config">
-    <p>[WoTThingConfig description.]</p>
-
-    <h3>Inputs</h3>
-        <dl class="message-properties">
-            <dt>bindingType
-            <span class="property-type">[property type(ex: string | buffer)]</span>
-            </dt>
-            <dd>binding type description.</dd>
-        </dl>
+    <p>This is a Config node that holds the settings for a WoT Thing.</p>
+    <p>Specify this configuration in Server-Property, Server-Action, and Server-Event nodes.</p>
     
     <h3>Details</h3>
-        <p>[detail description.]</p>
-    
-    <h3>References</h3>
+    <p>Specify the following items on the node's properties screen.</p>
     <ul>
-        <li>[reference information]</li>
+        <li>
+            Thing name: Specify the name of the Thing. In Thing Description, properties, actions, and events that refer to this setting are published with the Thing name specified here.
+        </li>
     </ul>
+    <p>The Thing Description is stored in the thingDescriptions variable of the global context with the key of &lt;Server Name&gt;::&lt;Thing Name&gt;.</p>
+    <p>You can check this in the context tab of the Node-RED editor. Press the refresh button to refer to the latest Thing Description.</p>
+    <p>This node uses <a href="https://github.com/eclipse-thingweb/node-wot">eclipse-thingweb/node-wot</a> for WoT implementation.</p>
+
 </script>

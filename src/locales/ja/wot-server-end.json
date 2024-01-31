@@ -1,22 +1,13 @@
 {
   "editor": {
-    "nameLabel": "名前",
-    "configLabel": "Thing設定",
     "paletteLabel": "Server-End",
-    "thingConfig": {
-      "tabLabel": "設定",
-      "thingName": {
-        "label": "Thing名",
-        "description": "Thing名の説明。",
-        "placeholder": "Thing名"
-      }
-    },
+    "nameLabel": "名前",
     "inParams": {
       "tabLabel": "入力",
       "returnValue": {
-        "label": "戻り値の格納元",
-        "description": "戻り値の格納元",
-        "placeholder": "戻り値の格納元"
+        "label": "戻り値の入力元",
+        "description": "戻り値の入力元。",
+        "placeholder": "戻り値の入力元"
       }
     }
   }

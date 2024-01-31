@@ -1,19 +1,22 @@
-<script type="text/html" data-help-name="wot-thing-config">
-    <p>[WoTThingConfig description.]</p>
+<script type="text/html" data-help-name="wot-server-config">
+    <p>This is a Config node that holds the settings for the server that publishes WoT's Thing.</p>
+    <p>Specify this setting in Server-Property, Server-Action, and Server-Event nodes.</p>
+    <p>The Thing Description, which defines the functions of the Thing to be published, is stored in the thingDescriptions variable of the global context with the key of &lt;Server Name&gt;::&lt;Thing Name&gt;.</p>
+    <p>You can check this in the context tab of the Node-RED editor. Press the refresh button to refer to the latest Thing Description.</p>
 
-    <h3>Inputs</h3>
-        <dl class="message-properties">
-            <dt>bindingType
-            <span class="property-type">[property type(ex: string | buffer)]</span>
-            </dt>
-            <dd>binding type description.</dd>
-        </dl>
-    
     <h3>Details</h3>
-        <p>[detail description.]</p>
-    
-    <h3>References</h3>
+    <p>The following items are specified on the node's properties screen:</p>
     <ul>
-        <li>[reference information]</li>
+        <li>
+            Server name: Specifies the server name.
+        </li>
+        <li>
+            Binding type: Specifies the method of communication between the server and client.
+        </li>
+        <li>
+            Binding config: Specifies the settings of Binding. When you change the Binding Type, it displays the settings(JSON) of the template according to the changed Binding type. Please change those settings as needed.
+        </li>
     </ul>
+    <p>This node uses <a href="https://github.com/eclipse-thingweb/node-wot">eclipse-thingweb/node-wot</a> for WoT implementation.</p>
+
 </script>

@@ -1,24 +1,24 @@
 {
-    "editor": {
-        "nameLabel": "Name",
-        "configLabel": "thing config",
-        "paletteLabel": "WoT Property",
-        "inParams": {
-            "tabLabel":"Input",
-            "propertyName":{
-                "label":"Property Name",
-                "description":"Property Name Description.",
-                "placeholder":"Property Name"
-            }
-        },
-        "outParams1": {
-            "tabLabel":"Output",
-            "outputLabel":"Output",
-            "output1":{
-                "label":"Output Parameter1",
-                "description":"Output Parameter1 description.",
-                "placeholder":"Output Parameter1"
-            }
-        }
+  "editor": {
+    "paletteLabel": "Server-Property",
+    "nameLabel": "Name",
+    "serverConfigLabel": "Server config",
+    "thingConfigLabel": "Thing config",
+    "propertyNameLabel": "Property name",
+    "propertyDataTypeLabel": "Data type",
+    "propertyReadOnlyFlagLabel": "Read only",
+    "propertyObservableFlagLabel": "Observable",
+    "outParams1": {
+      "outputLabel": "Read request"
+    },
+    "outParams2": {
+      "tabLabel": "Write request output",
+      "outputLabel": "Write request",
+      "writingValue": {
+        "label": "Writing value destination",
+        "description": "Writing value destination.",
+        "placeholder": "Writing value destination"
+      }
     }
+  }
 }

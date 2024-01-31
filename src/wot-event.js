@@ -44,8 +44,8 @@ module.exports = function (RED) {
                   })
                 },
                 (err) => {
-                  console.error('[warn] subscribe events.', err)
-                  node.warn(err)
+                  console.error('[error] subscribe events.', err)
+                  node.error(`[error] subscribe events. err: ${err.toString()}`)
                   node.status({
                     fill: 'red',
                     shape: 'ring',

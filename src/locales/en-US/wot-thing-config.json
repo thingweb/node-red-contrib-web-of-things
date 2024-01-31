@@ -1,11 +1,5 @@
 {
-    "editor": {
-        "nameLabel": "Name",
-        "configLabel": "thing config",
-        "bindingType":{
-            "label":"binding",
-            "description":"binding type description.",
-            "placeholder":"binding type"
-        }
-    }
+  "editor": {
+    "nameLabel": "Thing name"
+  }
 }

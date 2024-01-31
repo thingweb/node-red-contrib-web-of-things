@@ -89,9 +89,19 @@ module.exports = function (RED) {
               console.log('*** finish', props)
               if (props.content.observable) {
                 console.log('*** emitPropertyChange', props.name)
-                thing.emitPropertyChange(props.name)
+                thing
+                  .emitPropertyChange(props.name)
+                  .then(() => {
+                    resolve()
+                  })
+                  .catch((err) => {
+                    node.error(`[error] emit property change error. error: ${err.toString()}`)
+                    node.error(`[error] emit property change error. error: `, err)
+                    reject(err)
+                  })
+              } else {
+                resolve()
               }
-              resolve()
             }
             console.log('*** userNode', userNode)
             userNode.send([

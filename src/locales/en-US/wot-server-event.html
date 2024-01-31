@@ -1,0 +1,41 @@
+<script type="text/html" data-help-name="wot-server-event">
+    <p>This node is used on the server side to emit WoT events.</p>
+
+    <h3>Inputs</h3>
+        <dl class="message-properties">
+            <dt>Event
+            <span class="property-type">any (depending on the event definition)</span>
+            </dt>
+            <dd>When an event occurs on the server side, input the event value. The source of the event value input is specified on the node properties screen.</dd>
+        </dl>
+    
+    <h3>Outputs</h3>
+    None
+    
+    <h3>Details</h3>
+    <p>Specify the following items in the node's properties screen:</p>
+    <ul>
+        <li>
+            Name: Specify the node name.
+        </li>
+        <li>
+            Server config: Specify the server that will publish the action.
+        </li>
+        <li>
+            Thing config: Specify the Thing that the action belongs to.
+        </li>
+        <li>
+            Event name: Specify the event name.
+        </li>
+        <li>
+            Data type: Specify the data type of the event.
+        </li>
+        <li>
+            Event value source: Specify the source for entering the event value.
+        </li>
+    </ul>
+    <p>The Thing Description is stored in the thingDescriptions variable of the global context with the key of &lt;Server Name&gt;::&lt;Thing Name&gt;.</p>
+    <p>You can check this in the context tab of the Node-RED editor. Press the refresh button to refer to the latest Thing Description.</p>
+    <p>This node uses <a href="https://github.com/eclipse-thingweb/node-wot">eclipse-thingweb/node-wot</a> for WoT implementation.</p>
+     
+ </script>

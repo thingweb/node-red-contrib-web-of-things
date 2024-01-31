@@ -1,9 +1,5 @@
 {
   "editor": {
-    "nameLabel": "Thing名",
-    "bindingTypeLabel": "Binding種別",
-    "bindingConfigLabel": "Binding設定",
-    "bindingConfigPlaceholder": "Binding設定",
-    "configLabel": "Thing設定"
+    "nameLabel": "Thing名"
   }
 }
