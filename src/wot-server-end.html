@@ -1,0 +1,133 @@
+<script type="text/javascript">
+    (() => {
+        RED.nodes.registerType('wot-server-end', {
+            category: "Web of Things",
+            color: "#a2dea0",
+            defaults: {
+                name: {value:""},
+                inParams_returnValueType: {
+                    value: "msg"
+                },
+                inParams_returnValueConstValue: {
+                    value: "payload"
+                }
+            },
+            credentials: {
+                inParams_returnValue: {type: "text"},
+            },
+            inputs:1,
+            outputs:0,
+            icon: "arrow.png",
+            label: function() {
+                return this.name||this._("editor.paletteLabel")||"wot-server-end";
+            },
+            labelStyle: function() {
+                return this.name?"node_label_italic":"";
+            },
+            paletteLabel: function() {
+                return this._("editor.paletteLabel") || "node";
+            },
+            onpaletteadd: function() {
+            },
+            oneditprepare: function() {
+                console.log("node oneditprepare")
+                // Tab
+                const tabs = RED.tabs.create({
+                        id: 'red-tabs',
+                        onchange(tab) {
+                            $('#tabs-content').children().hide();
+                            $("#" + tab.id).show();
+                            $("#red-tabs").resize();
+                        },
+                    });
+
+                tabs.addTab({
+                    id: 'tab-inParams-settings',
+                    label: this._('editor.inParams.tabLabel'),
+                });
+
+                prepareInOutParamSetting("inParams", {
+                    name:"returnValue",
+                    types: ["msg"],
+                    defaultType: "msg",
+                    defaultValue: "payload",
+                    required: true
+                }, this)
+                
+            },
+            oneditsave: function() {
+                saveInOutParamSetting("inParams", {
+                    name:"returnValue",
+                    types: ["msg","str","num","env"],
+                    defaultType: "str",
+                    defaultValue: "payload",
+                    required: true
+                }, this)
+            }
+        });
+        const prepareInOutParamSetting = (inOrOutParams, params, _this) => {
+            const {name, types, defaultType, defaultValue, required} = params
+            const varName = `${inOrOutParams}_${name}`
+            if (!_this[`${varName}Type`]) {
+                _this[`${varName}Type`] = defaultType
+            }
+            if(this[`${varName}Type`] == 'str') {
+                $(`#node-input-${varName}ConstValue`).val("")
+            } else {
+                if(_this[`${varName}ConstValue`] == "") {
+                    $(`#node-input-${varName}ConstValue`).val(_this.credentials[varName]);
+                } else {
+                    _this.credentials[varName] = _this[`${varName}ConstValue`];
+                    $(`#node-input-${varName}`).val(_this.credentials[`${varName}`]);
+                }
+            }
+            $(`#node-input-${varName}Type`).val(_this[`${varName}Type`])
+            $(`#node-input-${varName}`).typedInput({
+                default: defaultType,
+                typeField: $(`#node-input-${varName}Type`),
+                types: types
+            })
+            $(`#node-input-${varName}`).typedInput('type', _this[`${varName}Type`])
+        }
+        const saveInOutParamSetting = (inOrOutParams, params, _this) => {
+            const varName = `${inOrOutParams}_${params.name}`
+            if($(`#node-input-${varName}Type`).val() != 'str') {
+                _this[`${varName}ConstValue`] = $(`#node-input-${varName}`).val()
+                $(`#node-input-${varName}ConstValue`).val(_this[`${varName}ConstValue`])
+            } else {
+                $(`#node-input-${varName}ConstValue`).val("")
+                _this[`${varName}ConstValue`] = ''
+            }
+        }
+    })();
+
+</script>
+
+<script type="text/html" data-template-name="wot-server-end">
+
+	<div class="form-row">
+		<label for="node-input-name"><span data-i18n="editor.nameLabel"></span></label>
+		<input type="text" id="node-input-name" data-i18n="[placeholder]editor.nameLabel">
+	</div>
+
+    <!-- Tab -->
+    <div class="form-row">
+        <ul style="min-width: 500px; margin-bottom: 20px;" id="red-tabs">
+        </ul>
+    </div>
+    <!-- Tab contents -->
+    <div id="tabs-content" style="min-height:250px;">
+        <div id="tab-inParams-settings">
+            <div class='form-row'>
+                <label for='node-input-inParams_returnValue'><span data-i18n="editor.inParams.returnValue.label"></span></label>
+                <input required type='text' id='node-input-inParams_returnValue' data-i18n="[placeholder]editor.inParams.returnValue.placeholder">
+                <input type='hidden' id='node-input-inParams_returnValueType'>
+                <input type='hidden' id='node-input-inParams_returnValueConstValue'>
+            </div>
+        </div>
+    </div>
+
+</script>
+
+<style>
+</style>

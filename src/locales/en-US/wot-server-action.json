@@ -1,0 +1,20 @@
+{
+  "editor": {
+    "paletteLabel": "Server-Action",
+    "nameLabel": "Name",
+    "serverConfigLabel": "Server config",
+    "thingConfigLabel": "Thing config",
+    "actionNameLabel": "Action name",
+    "actionInputDataTypeLabel": "Argument data type",
+    "actionOutputDataTypeLabel": "Return value data type",
+    "outParams1": {
+      "tabLabel": "Calling action",
+      "outputLabel": "Argument of action",
+      "actionArgs": {
+        "label": "Argument destination",
+        "description": "Argument destination.",
+        "placeholder": "Argument destination"
+      }
+    }
+  }
+}

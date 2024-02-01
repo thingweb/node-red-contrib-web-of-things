@@ -1,0 +1,41 @@
+<script type="text/html" data-help-name="wot-server-event">
+    <p>WoTのイベントを発行するためにサーバ側で利用するノードです。</p>
+
+    <h3>Inputs</h3>
+        <dl class="message-properties">
+            <dt>イベント
+            <span class="property-type">any(イベントの定義による)</span>
+            </dt>
+            <dd>サーバ側でイベントが発生したときにイベント値の入力を行います。イベント値の入力元は、ノードのプロパティ画面で指定します。</dd>
+        </dl>
+    
+    <h3>Outputs</h3>
+    なし
+    
+    <h3>Details</h3>
+    <p>ノードのプロパティ画面では以下の項目を指定します。</p>
+    <ul>
+        <li>
+            名前: ノード名を指定します。
+        </li>
+        <li>
+            サーバ設定: アクションを公開するサーバを指定します。
+        </li>
+        <li>
+            Thing設定: アクションが所属するThingを指定します。
+        </li>
+        <li>
+            イベント名: イベント名を指定します。
+        </li>
+        <li>
+            データ型: イベントのデータ型を指定します。
+        </li>
+        <li>
+            イベント値の入力元: イベント値を入力する元を指定します。
+        </li>
+    </ul>
+    <p>Thing Descriptionは、グローバルコンテキストのthingDescriptions変数に&lt;サーバ名&gt;::&lt;Thing名&gt;のキーに格納します。</p>
+    <p>Node-REDエディタのコンテキストデータタブで確認できます。グローバルの更新ボタンを押して最新のThing Descriptionを参照してください。</p>
+    <p>本ノードでは、WoTの実装として<a href="https://github.com/eclipse-thingweb/node-wot">eclipse-thingweb/node-wot</a>を利用します。</p>
+     
+ </script>

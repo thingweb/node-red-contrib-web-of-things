@@ -1,0 +1,14 @@
+{
+  "editor": {
+    "paletteLabel": "Server-End",
+    "nameLabel": "Name",
+    "inParams": {
+      "tabLabel": "Input",
+      "returnValue": {
+        "label": "Return value source",
+        "description": "Return value source.",
+        "placeholder": "Return value source"
+      }
+    }
+  }
+}

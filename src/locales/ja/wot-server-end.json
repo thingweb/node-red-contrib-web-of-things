@@ -1,0 +1,14 @@
+{
+  "editor": {
+    "paletteLabel": "Server-End",
+    "nameLabel": "名前",
+    "inParams": {
+      "tabLabel": "入力",
+      "returnValue": {
+        "label": "戻り値の入力元",
+        "description": "戻り値の入力元。",
+        "placeholder": "戻り値の入力元"
+      }
+    }
+  }
+}

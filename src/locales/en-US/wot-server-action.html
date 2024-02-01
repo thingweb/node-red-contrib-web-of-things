@@ -1,0 +1,43 @@
+<script type="text/html" data-help-name="wot-server-action">
+    <p>This node is used on the server side to implement WoT actions.</p>
+    <p>When a client calls an action, this node outputs an msg including arguments from its output terminal. Once the processing of the action is complete, input is made to the Server-End node (please input if there is a return value).</p>
+
+    <h3>Inputs</h3>
+    None
+    
+    <h3>Outputs</h3>
+        <dl class="message-properties">
+            <dt>Action arguments <span class="property-type">any (depending on action definition)</span></dt>
+            <dd>These are the arguments of the action. The destination of argument output is specified on the node's property screen.</dd>
+        </dl>
+    
+    <h3>Details</h3>
+    <p>The following items are specified on the node's properties screen:</p>
+    <ul>
+        <li>
+            Name: Specifies the node name.
+        </li>
+        <li>
+            Server config: Specify the server to publish the action.
+        </li>
+        <li>
+            Thing config: Specifies the Thing to which the action belongs.
+        </li>
+        <li>
+            Action name: Specifies the action name.
+        </li>
+        <li>
+            Argument data type: Specifies the data type of the action argument.
+        </li>
+        <li>
+            Return value data type: Specifies the data type of the action return value.
+        </li>
+        <li>
+            Argument destination: Specifies where to output the argument when the action call is received.
+        </li>
+    </ul>
+    <p>The Thing Description is stored in the thingDescriptions variable of the global context with the key of &lt;Server Name&gt;::&lt;Thing Name&gt;.</p>
+    <p>You can check this in the Context Data tab of the Node-RED editor. Press the refresh button to refer to the latest Thing Description.</p>
+    <p>This node uses <a href="https://github.com/eclipse-thingweb/node-wot">eclipse-thingweb/node-wot</a> for WoT implementation.</p>
+
+ </script>

@@ -1,0 +1,43 @@
+<script type="text/html" data-help-name="wot-server-action">
+    <p>WoTのアクションを実装するためにサーバ側で利用するノードです。</p>
+    <p>クライアントがアクションを呼び出すと、本ノードの出力端子から、引数を含むmsgを出力します。アクションの処理が完了したら、Server-Endノードへ入力を行います(戻り値があれば入力してください)。</p>
+
+    <h3>Inputs</h3>
+    なし
+    
+    <h3>Outputs</h3>
+        <dl class="message-properties">
+            <dt>アクションの引数 <span class="property-type">any(アクションの定義による)</span></dt>
+            <dd>アクションの引数です。引数の出力先は、ノードのプロパティ画面で指定します。</dd>
+        </dl>
+    
+    <h3>Details</h3>
+    <p>ノードのプロパティ画面では以下の項目を指定します。</p>
+    <ul>
+        <li>
+            名前: ノード名を指定します。
+        </li>
+        <li>
+            サーバ設定: アクションを公開するサーバを指定します。
+        </li>
+        <li>
+            Thing設定: アクションが所属するThingを指定します。
+        </li>
+        <li>
+            アクション名: アクション名を指定します。
+        </li>
+        <li>
+            引数のデータ型: アクションの引数のデータ型を指定します。
+        </li>
+        <li>
+            戻り値のデータ型: アクションの戻り値のデータ型を指定します。
+        </li>
+        <li>
+            引数の出力先: アクションの呼び出しを受信した場合に、引数を出力する先を指定します。
+        </li>
+    </ul>
+    <p>Thing Descriptionは、グローバルコンテキストのthingDescriptions変数に&lt;サーバ名&gt;::&lt;Thing名&gt;のキーに格納します。</p>
+    <p>Node-REDエディタのコンテキストデータタブで確認できます。グローバルの更新ボタンを押して最新のThing Descriptionを参照してください。</p>
+    <p>本ノードでは、WoTの実装として<a href="https://github.com/eclipse-thingweb/node-wot">eclipse-thingweb/node-wot</a>を利用します。</p>
+ 
+ </script>

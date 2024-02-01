@@ -9,13 +9,17 @@ The package is build upon [node-wot](https://github.com/eclipse/thingweb.node-wo
 
 ## Provided Nodes
 
-After installation the package adds 4 different nodes at the Node-RED palette, all together scoped under "Web of Things" title.
+After installation the package adds 8 different nodes at the Node-RED palette, all together scoped under "Web of Things" title.
 Those nodes are as follows and needed to interact with different interaction affordances of a Thing:
 
 1) Read Property node;
 2) Write Property node;
 3) Invoke Action node;
-4) Subscribe Event node.
+4) Subscribe Event node;
+5) Server-End node;
+6) Server-property node;
+7) Server-Action node;
+8) Server-Event node.
 
 ![WoT nodes](./screenshots/nodes.png)
 
@@ -68,4 +72,62 @@ Overall, a basic flow may look like this.
 ![Flow Example](./screenshots/flow-example.png)
 
 ### Expose Things
-Exposing Things is currently not available within this package but might be added later.
+
+To expose a Thing, firstly, drag & drop one of the nodes belonging to the Thing, either Property(Server-Property), Action(Server-Action), or Event(Server-Event) to the canvas. 
+
+When you double-click on that node, a property screen appears.
+
+![Property Screen](./screenshots/server-property-settings.png)
+
+On the properties screen, the `Server config` and `Thing config` must be configured. The roles of each configs are as follows:
+
+* Server config: Set up the communication method between the client and the Thing.
+* Thing config: Set the attributes of the Thing such as the Thing name.
+
+By performing `Server config` and `Thing config` in the Server-Property, Server-Action, Server-Event nodes, you determine how to publish properties, actions, and events.
+
+If you create a new server config on the properties screen, the following screen will appear.
+
+![Server Config Screen](./screenshots/server-config-settings.png)
+
+Perform the following settings:
+
+* Server name: Specify the server name.
+* Binding type: Specify the communication method between the server and the client.
+* Binding config: Perform settings according to the type of binding.
+
+If you create a new thing config on the properties screen, the following screen will appear.
+
+![Thing Config Screen](./screenshots/thing-config-settings.png)
+
+Specify the Thing name. The Thing name will be included in the Thing Description.
+
+Server config and Thing config can be shared across multiple Server-Property, Server-Action, Server-Event nodes. By sharing configs, you can publish one or more properties, actions, and events to the client as a single Thing.
+
+In addition to server config and Thing config, there are necessary settings for each Server-Property, Server-Action, Server-Event node. For the settings of each node, refer to the node help. Help can be viewed on the Node-RED editor's Help tab.
+
+The Server-End node represents the end of a flow executed by a client request.
+Flows connected to the two output terminals of the Server-Property node (read/write requests) and the output terminal of the Server-Action node must end with the Server-End node.
+
+Here's an example of a flow:
+
+![Server Flow Example](./screenshots/server-flow-example.png)
+
+The Thing Description required when the client uses a Thing is set in the thingDescriptions object of the global context. The member name is `<server name>::<Thing name>`.
+If you want to check the Thing Description, open the Context Data tab of Node-RED editor and press the refresh icon of the Global context to display it.
+
+![Reference TD](./screenshots/reference-td.png)
+
+Currently, the supported binding types are http, coap, and mqtt. As shown in the table below, each of these types of bindings has its own available/unavailable functions. Available functions are denoted by `✓` and unavailable functions are denoted by `-`.
+
+| |http|coap|mqtt|
+| :---: | :--- | :--- | :--- |
+|read property|✓|✓|-|
+|observe property|✓ *1|-|✓|
+|write property|✓|✓|✓|
+|invoke action|✓|✓|-|
+|subscribe event|✓ *1|-|✓|
+
+*1: After the connection with the server times out after 1 hour, it is not reconnected
+
+Also, it is unclear how to define the flow when the data type is null.

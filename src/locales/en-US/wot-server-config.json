@@ -1,0 +1,8 @@
+{
+  "editor": {
+    "nameLabel": "Server name",
+    "bindingTypeLabel": "Binding type",
+    "bindingConfigLabel": "Binding config",
+    "bindingConfigPlaceholder": "Binding config"
+  }
+}
