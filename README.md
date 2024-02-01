@@ -21,7 +21,7 @@ Those nodes are as follows and needed to interact with different interaction aff
 7) Server-Action node;
 8) Server-Event node.
 
-![WoT nodes](./screenshots/nodes.png)
+![WoT nodes](screenshots/nodes.png)
 
 ## Getting Started
 
@@ -31,11 +31,11 @@ In order to consume a Thing and interact with it, drag and drop one of the inter
 Then double click on that node.
 Inside the opened window click the pencil icon next to "Add new consumed-thing..." dropdown.
 
-![Add new consumed Thing](./screenshots/add-thing.png)
+![Add new consumed Thing](screenshots/add-thing.png)
 
 A new window will appear.
 
-![Add Thing Description](./screenshots/add-td.png)
+![Add Thing Description](screenshots/add-td.png)
 
 Now either copy-paste/type in a Thing Description inside the TD JSON box or fetch a Thing Description from a URL.
 **Tip:** In case you choose the first option, click on the three dots to expand the JSON editor.
@@ -69,7 +69,7 @@ Subscribing to an event is pretty much the same as reading a property.
 
 Overall, a basic flow may look like this.
 
-![Flow Example](./screenshots/flow-example.png)
+![Flow Example](screenshots/flow-example.png)
 
 ### Expose Things
 
@@ -77,7 +77,7 @@ To expose a Thing, firstly, drag & drop one of the nodes belonging to the Thing,
 
 When you double-click on that node, a property screen appears.
 
-![Property Screen](./screenshots/server-property-settings.png)
+![Property Screen](screenshots/server-property-settings.png)
 
 On the properties screen, the `Server config` and `Thing config` must be configured. The roles of each configs are as follows:
 
@@ -88,7 +88,7 @@ By performing `Server config` and `Thing config` in the Server-Property, Server-
 
 If you create a new server config on the properties screen, the following screen will appear.
 
-![Server Config Screen](./screenshots/server-config-settings.png)
+![Server Config Screen](screenshots/server-config-settings.png)
 
 Perform the following settings:
 
@@ -98,7 +98,7 @@ Perform the following settings:
 
 If you create a new thing config on the properties screen, the following screen will appear.
 
-![Thing Config Screen](./screenshots/thing-config-settings.png)
+![Thing Config Screen](screenshots/thing-config-settings.png)
 
 Specify the Thing name. The Thing name will be included in the Thing Description.
 
@@ -111,12 +111,12 @@ Flows connected to the two output terminals of the Server-Property node (read/wr
 
 Here's an example of a flow:
 
-![Server Flow Example](./screenshots/server-flow-example.png)
+![Server Flow Example](screenshots/server-flow-example.png)
 
 The Thing Description required when the client uses a Thing is set in the thingDescriptions object of the global context. The member name is `<server name>::<Thing name>`.
 If you want to check the Thing Description, open the Context Data tab of Node-RED editor and press the refresh icon of the Global context to display it.
 
-![Reference TD](./screenshots/reference-td.png)
+![Reference TD](screenshots/reference-td.png)
 
 Currently, the supported binding types are http, coap, and mqtt. As shown in the table below, each of these types of bindings has its own available/unavailable functions. Available functions are denoted by `✓` and unavailable functions are denoted by `-`.
 
