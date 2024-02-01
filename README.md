@@ -129,3 +129,5 @@ Currently, the supported binding types are http, coap, and mqtt. As shown in the
 |subscribe event|✓ *1|-|✓|
 
 *1: After the connection with the server times out after 1 hour, it is not reconnected
+
+Also, it is unclear how to define the flow when the data type is null.

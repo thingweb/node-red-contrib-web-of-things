@@ -1,6 +1,6 @@
 {
-  "name": "node-red-contrib-web-of-things",
-  "version": "2.0.0-beta.0",
+  "name": "@hidetak/node-red-contrib-web-of-things",
+  "version": "2.0.0-beta.1",
   "description": "Web of Things node for node-RED.",
   "author": "hassib.belhaj_hassine@siemens.com",
   "contributors": [
@@ -36,7 +36,8 @@
   },
   "scripts": {
     "build": "npm run copy:src2dist && tsc",
-    "copy:src2dist": "node -e \"require('fs-extra').copySync('./src', './dist')\""
+    "copy:src2dist": "node -e \"require('fs-extra').copySync('./src', './dist')\"",
+    "publish:beta": "npm publish --tag beta --access=public"
   },
   "dependencies": {
     "@node-wot/binding-coap": "^0.8.10",
