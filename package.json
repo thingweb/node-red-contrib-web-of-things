@@ -1,5 +1,5 @@
 {
-  "name": "@hidetak/node-red-contrib-web-of-things",
+  "name": "node-red-contrib-web-of-things",
   "version": "2.0.0-beta.5",
   "description": "Web of Things node for node-RED.",
   "author": "hassib.belhaj_hassine@siemens.com",
