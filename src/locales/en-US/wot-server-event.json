@@ -5,6 +5,7 @@
     "serverConfigLabel": "Server config",
     "thingConfigLabel": "Thing config",
     "eventNameLabel": "Event name",
+    "eventDescriptionLabel": "Event description",
     "eventDataTypeLabel": "Data type",
     "inParams": {
       "tabLabel": "Input",

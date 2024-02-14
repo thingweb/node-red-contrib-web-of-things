@@ -118,23 +118,20 @@ module.exports = function (RED) {
     }
 
     async function createWoTScriptAndExpose(
-      title: string,
-      description: string,
+      thingProps: { title: string; description: string },
       servientWrapper: ServientWrapper,
       userNodes: any[]
     ) {
       // create TD
-      let td = { title, description }
-      let thingName
+      let td = { ...thingProps }
       for (const userNode of userNodes) {
         const props = userNode.getProps()
         td[props.attrType] = {
           ...td[props.attrType],
           [props.name]: props.content,
         }
-        thingName = userNode.getThingName()
       }
-      const thing = await servientWrapper.createThing(td, thingName)
+      const thing = await servientWrapper.createThing(td)
       // get elements of TD from each node
       for (const userNode of userNodes) {
         const props = userNode.getProps()
@@ -153,9 +150,9 @@ module.exports = function (RED) {
       }
       const thingDescription = await servientWrapper.exposeThing(thing)
       const thingDescriptions = node.context().global.get('thingDescriptions') || {}
-      thingDescriptions[`${config.name}::${title}`] = thingDescription
+      thingDescriptions[`${config.name}::${thingProps.title}`] = thingDescription
       node.context().global.set('thingDescriptions', thingDescriptions)
-      console.debug(`[info] servient started. ${config.name}::${title}`)
+      console.debug(`[info] servient started. ${config.name}::${thingProps.title}`)
     }
 
     async function launchServient() {
@@ -179,13 +176,14 @@ module.exports = function (RED) {
         // make thing name list
         const thingNamesObj = {}
         for (const userNode of userNodes) {
-          thingNamesObj[userNode.getThingName()] = true
+          thingNamesObj[userNode.getThingProps().title] = true
         }
         const thingNames = Object.keys(thingNamesObj)
         // Generate and Expose a Thing for each Thing name
         for (const thingName of thingNames) {
-          const targetNodes = userNodes.filter((n) => n.getThingName() === thingName)
-          await createWoTScriptAndExpose(thingName, '', servientWrapper, targetNodes)
+          const targetNodes = userNodes.filter((n) => n.getThingProps().title === thingName)
+          const thingProps = targetNodes[0]?.getThingProps() || {}
+          await createWoTScriptAndExpose(thingProps, servientWrapper, targetNodes)
         }
         node.running = true
         userNodes.forEach((n) => {

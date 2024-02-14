@@ -5,6 +5,7 @@
     "serverConfigLabel": "サーバ設定",
     "thingConfigLabel": "Thing設定",
     "eventNameLabel": "イベント名",
+    "eventDescriptionLabel": "イベントの説明",
     "eventDataTypeLabel": "データ型",
     "inParams": {
       "tabLabel": "イベントの入力",

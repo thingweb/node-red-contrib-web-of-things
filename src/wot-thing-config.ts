@@ -2,8 +2,11 @@ module.exports = function (RED) {
   function WoTThingConfig(config) {
     RED.nodes.createNode(this, config)
     const node = this
-    node.getThingName = () => {
-      return config.name
+    node.getProps = () => {
+      return {
+        title: config.name,
+        description: config.description,
+      }
     }
   }
 

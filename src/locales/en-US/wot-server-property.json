@@ -5,6 +5,7 @@
     "serverConfigLabel": "Server config",
     "thingConfigLabel": "Thing config",
     "propertyNameLabel": "Property name",
+    "propertyDescriptionLabel": "Property description",
     "propertyDataTypeLabel": "Data type",
     "propertyReadOnlyFlagLabel": "Read only",
     "propertyObservableFlagLabel": "Observable",

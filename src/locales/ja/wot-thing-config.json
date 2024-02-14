@@ -1,5 +1,6 @@
 {
   "editor": {
-    "nameLabel": "Thing名"
+    "nameLabel": "Thing名",
+    "descriptionLabel": "説明"
   }
 }

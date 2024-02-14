@@ -5,6 +5,7 @@
     "serverConfigLabel": "サーバ設定",
     "thingConfigLabel": "Thing設定",
     "actionNameLabel": "アクション名",
+    "actionDescriptionLabel": "アクションの説明",
     "actionInputDataTypeLabel": "引数のデータ型",
     "actionOutputDataTypeLabel": "戻り値のデータ型",
     "outParams1": {

@@ -5,6 +5,7 @@
     "serverConfigLabel": "Server config",
     "thingConfigLabel": "Thing config",
     "actionNameLabel": "Action name",
+    "actionDescriptionLabel": "Action description",
     "actionInputDataTypeLabel": "Argument data type",
     "actionOutputDataTypeLabel": "Return value data type",
     "outParams1": {

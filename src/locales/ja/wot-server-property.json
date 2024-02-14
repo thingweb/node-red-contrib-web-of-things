@@ -5,6 +5,7 @@
     "serverConfigLabel": "サーバ設定",
     "thingConfigLabel": "Thing設定",
     "propertyNameLabel": "プロパティ名",
+    "propertyDescriptionLabel": "プロパティの説明",
     "propertyDataTypeLabel": "データ型",
     "propertyReadOnlyFlagLabel": "読み込みのみ",
     "propertyObservableFlagLabel": "観測可能",

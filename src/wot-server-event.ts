@@ -28,9 +28,9 @@ module.exports = function (RED) {
     }
 
     // for wot-server-config
-    node.getThingName = () => {
+    node.getThingProps = () => {
       const woTThingConfig = RED.nodes.getNode(config.woTThingConfig)
-      return woTThingConfig.getThingName()
+      return woTThingConfig.getProps()
     }
 
     node.on('input', async (msg, send, done) => {
@@ -47,7 +47,7 @@ module.exports = function (RED) {
           )
         }
         await ServientManager.getInstance()
-          .getThing(woTServerConfig.id, node.getThingName())
+          .getThing(woTServerConfig.id, node.getThingProps().title)
           .emitEvent(config.eventName, node.inParams_eventValue)
         console.debug('[debug] emitEvent finished. eventName: ', config.eventName)
 

@@ -30,9 +30,9 @@ module.exports = function (RED) {
     }
 
     // for wot-server-config
-    node.getThingName = () => {
+    node.getThingProps = () => {
       const woTThingConfig = RED.nodes.getNode(config.woTThingConfig)
-      return woTThingConfig.getThingName()
+      return woTThingConfig.getProps()
     }
 
     node.on('input', async (msg, send, done) => {
@@ -40,7 +40,7 @@ module.exports = function (RED) {
         const woTServerConfig = RED.nodes.getNode(config.woTServerConfig)
 
         await ServientManager.getInstance()
-          .getThing(woTServerConfig.id, node.getThingName())
+          .getThing(woTServerConfig.id, node.getThingProps().title)
           .emitPropertyChange(config.propertyName)
         console.debug('[debug] emitPropertyChange finished. propertyName: ', config.propertyName)
 

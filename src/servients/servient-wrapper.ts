@@ -33,9 +33,9 @@ export default class ServientWrapper {
     this.wot = await this.servient.start()
   }
 
-  public async createThing(td, thingName: string) {
+  public async createThing(td) {
     const thing = await this.wot.produce(td)
-    this.things[thingName] = thing
+    this.things[td.title] = thing
     return thing
   }
 

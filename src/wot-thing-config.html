@@ -4,6 +4,7 @@
             category: 'config',
             defaults: {
                 name: { value: '', required:true },
+                description: { value: '' }
             },
             credentials: {
             },
@@ -60,5 +61,9 @@
     <div class='form-row'>
         <label for='node-config-input-name'><span data-i18n="editor.nameLabel"></span></label>
         <input type='text' id='node-config-input-name' data-i18n="[placeholder]editor.nameLabel">
+    </div>
+    <div class='form-row'>
+        <label for='node-config-input-description'><span data-i18n="editor.descriptionLabel"></span></label>
+        <input type='text' id='node-config-input-description' data-i18n="[placeholder]editor.descriptionLabel">
     </div>
 </script>
