@@ -173,13 +173,13 @@ module.exports = function (RED) {
       try {
         await waitForFinishPrepareRelatedNodes(userNodes, config._users)
         await servientWrapper.startServient()
-        // make thing name list
+        // make thing title list
         const thingNamesObj = {}
         for (const userNode of userNodes) {
           thingNamesObj[userNode.getThingProps().title] = true
         }
         const thingNames = Object.keys(thingNamesObj)
-        // Generate and Expose a Thing for each Thing name
+        // Generate and Expose a Thing for each Thing title
         for (const thingName of thingNames) {
           const targetNodes = userNodes.filter((n) => n.getThingProps().title === thingName)
           const thingProps = targetNodes[0]?.getThingProps() || {}
