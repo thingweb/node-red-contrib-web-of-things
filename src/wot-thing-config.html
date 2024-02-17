@@ -1,0 +1,69 @@
+<script type='text/javascript'>
+    (() => {
+        RED.nodes.registerType('wot-thing-config', {
+            category: 'config',
+            defaults: {
+                name: { value: '', required:true },
+                description: { value: '' }
+            },
+            credentials: {
+            },
+            label: function () {
+                return this.name || this._("editor.configLabel");
+            },
+            labelStyle: function () {
+                return this.name ? 'node_label_italic' : ''
+            },
+            oneditprepare: function() {
+            },
+            oneditsave: function() {
+            }
+        })
+
+        const createInOutParamSetting = (params, _this) => {
+            const {name, types, defaultType, defaultValue, required} = params
+            if (!_this[name+"Type"]) {
+                _this[name+"Type"] = defaultType
+            }
+            if(_this[name+"Type"] == 'str') {
+                $(`#node-config-input-${name}ConstValue`).val("")
+            } else {
+                if(_this[name+"ConstValue"] == "") {
+                    $(`#node-config-input-${name}ConstValue`).val(_this.credentials[name]);
+                } else {
+                    _this.credentials[name] = _this[name+"ConstValue"];
+                    $(`#node-config-input-${name}`).val(_this.credentials[name]);
+                }
+            }
+            $(`#node-config-input-${name}Type`).val(_this[name+"Type"])
+            $(`#node-config-input-${name}`).typedInput({
+                default: defaultType,
+                typeField: $(`#node-config-input-${name}Type`),
+                types: types
+            })
+            $(`#node-config-input-${name}`).typedInput('type', _this[name+"Type"])
+        }
+        const saveInOutParamSetting = (params, _this) => {
+            const {name} = params
+            if($(`#node-config-input-${name}Type`).val() != 'str') {
+                _this[`${name}ConstValue`] = $(`#node-config-input-${name}`).val()
+                $(`#node-config-input-${name}ConstValue`).val(_this[`${name}ConstValue`])
+            } else {
+                $(`#node-config-input-${name}ConstValue`).val("")
+                _this[`${name}ConstValue`] = ''
+            }
+        }
+
+    })()
+</script>
+
+<script type='text/html' data-template-name='wot-thing-config'>
+    <div class='form-row'>
+        <label for='node-config-input-name'><span data-i18n="editor.nameLabel"></span></label>
+        <input type='text' id='node-config-input-name' data-i18n="[placeholder]editor.nameLabel">
+    </div>
+    <div class='form-row'>
+        <label for='node-config-input-description'><span data-i18n="editor.descriptionLabel"></span></label>
+        <input type='text' id='node-config-input-description' data-i18n="[placeholder]editor.descriptionLabel">
+    </div>
+</script>

@@ -1,0 +1,8 @@
+{
+  "editor": {
+    "nameLabel": "サーバ名",
+    "bindingTypeLabel": "Binding種別",
+    "bindingConfigLabel": "Binding設定",
+    "bindingConfigPlaceholder": "Binding設定"
+  }
+}

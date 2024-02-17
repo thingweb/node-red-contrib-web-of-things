@@ -1,0 +1,127 @@
+<script type='text/javascript'>
+    (() => {
+        const BINDING_TYPE_LIST = ["http", "websocket", "coap", "mqtt"]
+        const BINDING_CONFIG_DEFAULT = {
+            http: {
+                port: 8080,
+                allowSelfSigned: true
+            },
+            websocket: {
+                port: 9090,
+                allowSelfSigned: true
+            },
+            coap: {
+                port: 5683
+            },
+            mqtt: {
+                uri: "mqtt://test.mosquitto.org"
+            },
+        }
+
+        RED.nodes.registerType('wot-server-config', {
+            category: 'config',
+            defaults: {
+                name: { value: '', required:true },
+                bindingType: {value:'http'},
+                bindingConfigType: {value:'json'},
+                bindingConfigConstValue: {value:'{}'},
+            },
+            credentials: {
+                bindingConfig: {type: "object"},
+            },
+            label: function () {
+                return this.name || this._("editor.configLabel");
+            },
+            labelStyle: function () {
+                return this.name ? 'node_label_italic' : ''
+            },
+            oneditprepare: function() {
+                 // 入力パラメータの指定項目作成
+                 createInOutParamSetting({
+                    name:"bindingConfig",
+                    types: ["json"],
+                    defaultType: "json",
+                    defaultValue: '{}',
+                    required: true
+                }, this)
+
+               BINDING_TYPE_LIST.forEach((type) => {
+                    $("#node-config-input-bindingType").append(`<option value="${type}">${type}</option>`)
+                })
+
+                $("#node-config-input-bindingType").val(this.bindingType)
+
+                $("#node-config-input-bindingType").on("change", () => {
+                    const selectedBindingType = $("#node-config-input-bindingType").val()
+                    if(selectedBindingType === this.bindingType && this.bindingConfigConstValue !== "{}") {
+                        $("#node-config-input-bindingConfig").typedInput("value", this.bindingConfigConstValue)
+                    } else {
+                        $("#node-config-input-bindingConfig").typedInput("value", JSON.stringify(BINDING_CONFIG_DEFAULT[selectedBindingType]))
+                    }
+                })
+            },
+            oneditsave: function() {
+                saveInOutParamSetting({
+                    name:"bindingConfig",
+                    types: ["json"],
+                    defaultType: "json",
+                    defaultValue: '{}',
+                    required: true
+                }, this)
+            }
+        })
+
+        const createInOutParamSetting = (params, _this) => {
+            const {name, types, defaultType, defaultValue, required} = params
+            if (!_this[name+"Type"]) {
+                _this[name+"Type"] = defaultType
+            }
+            if(_this[name+"Type"] == 'str') {
+                $(`#node-config-input-${name}ConstValue`).val("")
+            } else {
+                if(_this[name+"ConstValue"] == "") {
+                    $(`#node-config-input-${name}ConstValue`).val(_this.credentials[name]);
+                } else {
+                    _this.credentials[name] = _this[name+"ConstValue"];
+                    $(`#node-config-input-${name}`).val(_this.credentials[name]);
+                }
+            }
+            $(`#node-config-input-${name}Type`).val(_this[name+"Type"])
+            $(`#node-config-input-${name}`).typedInput({
+                default: defaultType,
+                typeField: $(`#node-config-input-${name}Type`),
+                types: types
+            })
+            $(`#node-config-input-${name}`).typedInput('type', _this[name+"Type"])
+        }
+        const saveInOutParamSetting = (params, _this) => {
+            const {name} = params
+            if($(`#node-config-input-${name}Type`).val() != 'str') {
+                _this[`${name}ConstValue`] = $(`#node-config-input-${name}`).val()
+                $(`#node-config-input-${name}ConstValue`).val(_this[`${name}ConstValue`])
+            } else {
+                $(`#node-config-input-${name}ConstValue`).val("")
+                _this[`${name}ConstValue`] = ''
+            }
+        }
+
+    })()
+</script>
+
+<script type='text/html' data-template-name='wot-server-config'>
+    <div class='form-row'>
+        <label for='node-config-input-name'><span data-i18n="editor.nameLabel"></span></label>
+        <input type='text' id='node-config-input-name' data-i18n="[placeholder]editor.nameLabel">
+    </div>
+    <div class='form-row'>
+        <label for='node-config-input-bindingType'><span data-i18n="editor.bindingTypeLabel"></span></label>
+        <select id='node-config-input-bindingType'>
+        </select>
+    </div>
+    <div class='form-row'>
+        <label for='node-config-input-bindingConfig'><span data-i18n="editor.bindingConfigLabel"></span></label>
+        <input required type='text' id='node-config-input-bindingConfig' data-i18n="[placeholder]editor.bindingConfigPlaceholder">
+        <input type='hidden' id='node-config-input-bindingConfigType'>
+        <input type='hidden' id='node-config-input-bindingConfigConstValue'>
+    </div>
+</script>

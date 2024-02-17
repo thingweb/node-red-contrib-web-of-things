@@ -1,0 +1,29 @@
+<script type="text/html" data-help-name="wot-server-end">
+    <p>This node connects at the end of reading/writing WoT's properties and processing actions.</p>
+    <p>Be sure to connect to this node, as inputting into this node notifies the client side that the process is complete.</p>
+    <p>If there is a value to return to the client, store the value in the variable specified on the properties screen and then input it.</p>
+
+    <h3>Inputs</h3>
+        <dl class="message-properties">
+            <dt>Notification of completion of processing
+            <span class="property-type">any (depending on the definition of property or action)</span>
+            </dt>
+            <dd>Input is performed when the reading/writing of properties and the processing of actions are completed. If you want to return a value to the client, include the value in the msg member.</dd>
+        </dl>
+    
+    <h3>Outputs</h3>
+    None
+    
+    <h3>Details</h3>
+    <p>Specify the following items on the node properties screen:</p>
+    <ul>
+        <li>
+            Name: Specify the node name.
+        </li>
+        <li>
+            Return value source: Specify the source to input the value to return to the client.
+        </li>
+    </ul>
+    <p>To return a value to the client, use the information included in msg._wot. Please do not delete msg._wot.</p>
+     
+ </script>

@@ -1,0 +1,25 @@
+{
+  "editor": {
+    "paletteLabel": "Server-Property",
+    "nameLabel": "Name",
+    "serverConfigLabel": "Server config",
+    "thingConfigLabel": "Thing config",
+    "propertyNameLabel": "Property name",
+    "propertyDescriptionLabel": "Property description",
+    "propertyDataTypeLabel": "Data type",
+    "propertyReadOnlyFlagLabel": "Read only",
+    "propertyObservableFlagLabel": "Observable",
+    "outParams1": {
+      "outputLabel": "Read request"
+    },
+    "outParams2": {
+      "tabLabel": "Write request output",
+      "outputLabel": "Write request",
+      "writingValue": {
+        "label": "Writing value destination",
+        "description": "Writing value destination.",
+        "placeholder": "Writing value destination"
+      }
+    }
+  }
+}

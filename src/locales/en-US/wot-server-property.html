@@ -1,0 +1,71 @@
+<script type="text/html" data-help-name="wot-server-property">
+    <p>This node is used on the server side to implement WoT properties.</p>
+    <p>It provides the following three functions:</p>
+    <ul>
+        <li>If a read request is received from the client, an msg will be output from the first terminal. When the property value is input into the Server-End node, it will be returned to the client.</li>
+        <li>If a write request is received from the client, an msg containing the value to write will be output from the second terminal. Once the property value write processing is complete, input will be made to the Server-End node.</li>
+        <li>When the property value changes, if you input to this node, a notification will be made to the clients observing the change.</li>
+    </ul>
+
+    <h3>Inputs</h3>
+        <dl class="message-properties">
+            <dt>Notification of property change
+            <span class="property-type">-</span>
+            </dt>
+            <dd>Input is performed when there is a change in the property on the server side. By making an input, it will notify the clients that are observing. There is no need to include a value in the input.</dd>
+        </dl>
+    
+    <h3>Outputs</h3>
+        <ol class="node-ports">
+            <li>
+                <dl class="message-properties">
+                    <dt>Read Request
+                        <span class="property-type">any(depending on the property definition)</span></dt>
+                    <dd>If a property read request is received from the client, an output will be made from the first terminal.</dd>
+                </dl>
+            </li>
+            <li>
+                <dl class="message-properties">
+                    <dt>Write Request
+                        <span class="property-type">any(depending on the property definition)</span></dt>
+                    <dd>If a property write request is received from the client, an output will be made from the second terminal. The output destination for the write value is specified on the node properties screen.</dd>
+                </dl>
+            </li>
+        </ol>
+    
+    <h3>Details</h3>
+        <p>Specify the following items in the node's properties screen:</p>
+        <ul>
+            <li>
+                Name: Specify the node name.
+            </li>
+            <li>
+                Server config: Specify the server that will publish the property.
+            </li>
+            <li>
+                Thing config: Specify the Thing that the property belongs to.
+            </li>
+            <li>
+                Property name: Specify the property name.
+            </li>
+            <li>
+                Property description: Specify the property description.
+            </li>
+            <li>
+                Data type: Specify the data type of the property.
+            </li>
+            <li>
+                Read only: Specify if the property value should be read-only or not.
+            </li>
+            <li>
+                Observable: Specify whether to notify the client when there are changes to the property.
+            </li>
+            <li>
+                Writing value destination: Specify where to output the writing value when a write request is received.
+            </li>
+        </ul>
+        <p>The Thing Description is stored in the thingDescriptions variable of the global context with the key of &lt;Server Name&gt;::&lt;Thing Title&gt;.</p>
+        <p>You can check this in the Context Data tab of the Node-RED editor. Press the refresh button to refer to the latest Thing Description.</p>
+        <p>This node uses <a href="https://github.com/eclipse-thingweb/node-wot">eclipse-thingweb/node-wot</a> for WoT implementation.</p>
+             
+ </script>

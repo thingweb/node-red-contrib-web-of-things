@@ -1,0 +1,173 @@
+<script type="text/javascript">
+    (() => {
+        RED.nodes.registerType('wot-server-event', {
+            category: "Web of Things",
+            color: "#a2dea0",
+            defaults: {
+                name: {value:""},
+                eventName: {value:"", required:true},
+                eventDescription: {value:""},
+                eventDataType: {value:"string", required:true},
+                inParams_eventValueType: {
+                    value: "msg"
+                },
+                inParams_eventValueConstValue: {
+                    value: "payload"
+                },
+                woTServerConfig: {
+                    type: "wot-server-config",
+                    value: "",
+                    required: true
+                },
+                woTThingConfig: {
+                    type: "wot-thing-config",
+                    value: "",
+                    required: true
+                }
+            },
+            credentials: {
+                inParams_eventValue: {type: "text"}
+            },
+            inputs:1,
+            outputs:0,
+            icon: "arrow.png",
+            label: function() {
+                return this.name||this._("editor.paletteLabel")||"wot-server-event";
+            },
+            labelStyle: function() {
+                return this.name?"node_label_italic":"";
+            },
+            paletteLabel: function() {
+                return this._("editor.paletteLabel") || "node";
+            },
+            onpaletteadd: function() {
+            },
+            oneditprepare: function() {
+                console.log("node oneditprepare")
+                // Tab
+                const tabs = RED.tabs.create({
+                        id: 'red-tabs',
+                        onchange(tab) {
+                            $('#tabs-content').children().hide();
+                            $("#" + tab.id).show();
+                            $("#red-tabs").resize();
+                        },
+                    });
+                tabs.addTab({
+                    id: 'tab-inParams-settings',
+                    label: this._('editor.inParams.tabLabel'),
+                });
+
+                prepareInOutParamSetting("inParams", {
+                    name:"eventValue",
+                    types: ["msg"],
+                    defaultType: "msg",
+                    defaultValue: "payload",
+                    required: true
+                }, this)
+            },
+            oneditsave: function() {
+                saveInOutParamSetting("inParams", {
+                    name:"eventValue",
+                    types: ["msg"],
+                    defaultType: "msg",
+                    defaultValue: "payload",
+                    required: true
+                }, this)
+            }
+        });
+        const prepareInOutParamSetting = (inOrOutParams, params, _this) => {
+            const {name, types, defaultType, defaultValue, required} = params
+            const varName = `${inOrOutParams}_${name}`
+            if (!_this[`${varName}Type`]) {
+                _this[`${varName}Type`] = defaultType
+            }
+            if(this[`${varName}Type`] == 'str') {
+                $(`#node-input-${varName}ConstValue`).val("")
+            } else {
+                if(_this[`${varName}ConstValue`] == "") {
+                    $(`#node-input-${varName}ConstValue`).val(_this.credentials[varName]);
+                } else {
+                    _this.credentials[varName] = _this[`${varName}ConstValue`];
+                    $(`#node-input-${varName}`).val(_this.credentials[`${varName}`]);
+                }
+            }
+            $(`#node-input-${varName}Type`).val(_this[`${varName}Type`])
+            $(`#node-input-${varName}`).typedInput({
+                default: defaultType,
+                typeField: $(`#node-input-${varName}Type`),
+                types: types
+            })
+            $(`#node-input-${varName}`).typedInput('type', _this[`${varName}Type`])
+        }
+        const saveInOutParamSetting = (inOrOutParams, params, _this) => {
+            const varName = `${inOrOutParams}_${params.name}`
+            if($(`#node-input-${varName}Type`).val() != 'str') {
+                _this[`${varName}ConstValue`] = $(`#node-input-${varName}`).val()
+                $(`#node-input-${varName}ConstValue`).val(_this[`${varName}ConstValue`])
+            } else {
+                $(`#node-input-${varName}ConstValue`).val("")
+                _this[`${varName}ConstValue`] = ''
+            }
+        }
+    })();
+
+</script>
+
+<script type="text/html" data-template-name="wot-server-event">
+
+	<div class="form-row">
+		<label for="node-input-name"><span data-i18n="editor.nameLabel"></span></label>
+		<input type="text" id="node-input-name" data-i18n="[placeholder]editor.nameLabel">
+	</div>
+    <div class='form-row'>
+        <label for='node-input-woTServerConfig' style='font-size: 95%;'><span data-i18n="editor.serverConfigLabel"></label>
+        <input required type='url' id='node-input-woTServerConfig' placeholder='[placeholder]editor.serverConfigLabel'>
+    </div>
+    <div class='form-row'>
+        <label for='node-input-woTThingConfig' style='font-size: 95%;'><span data-i18n="editor.thingConfigLabel"></label>
+        <input required type='url' id='node-input-woTThingConfig' placeholder='[placeholder]editor.thingConfigLabel'>
+    </div>
+
+	<div class="form-row">
+		<label for="node-input-eventName"><span data-i18n="editor.eventNameLabel"></span></label>
+		<input type="text" id="node-input-eventName" data-i18n="[placeholder]editor.eventNameLabel">
+	</div>
+	<div class="form-row">
+		<label for="node-input-eventDescription"><span data-i18n="editor.eventDescriptionLabel"></span></label>
+		<input type="text" id="node-input-eventDescription" data-i18n="[placeholder]editor.eventDescriptionLabel">
+	</div>
+	<div class="form-row">
+		<label for="node-input-eventDataType"><span data-i18n="editor.eventDataTypeLabel"></span></label>
+		<select id="node-input-eventDataType" data-i18n="[placeholder]editor.eventDataTypeLabel">
+            <option value="string">string</option>
+            <option value="number">number</option>
+            <option value="integer">integer</option>
+            <option value="boolean">boolean</option>
+            <option value="object">object</option>
+            <option value="array">array</option>
+            <option value="null">null</option>
+        </select>
+	</div>
+
+    <!-- Tab -->
+    <div class="form-row">
+        <ul style="min-width: 500px; margin-bottom: 20px;" id="red-tabs">
+        </ul>
+    </div>
+    <!-- Tab contents -->
+    <div id="tabs-content" style="min-height:250px;">
+        <div id="tab-inParams-settings">
+            <div class='form-row'>
+                <label for='node-input-inParams_eventValue'><span data-i18n="editor.inParams.eventValue.label"></span></label>
+                <input required type='text' id='node-input-inParams_eventValue' data-i18n="[placeholder]editor.inParams.eventValue.placeholder">
+                <input type='hidden' id='node-input-inParams_eventValueType'>
+                <input type='hidden' id='node-input-inParams_eventValueConstValue'>
+            </div>
+        </div>
+    </div>
+
+</script>
+
+<style>
+</style>

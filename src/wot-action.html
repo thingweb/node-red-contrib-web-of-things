@@ -53,7 +53,7 @@
                             while (select.firstChild) select.removeChild(select.firstChild);
                             // Populate with new actions
                             let indx = 0;
-                            Object.keys(JSON.parse(config.td).actions).forEach(action => {
+                            Object.keys(JSON.parse(config.td).actions || {}).forEach(action => {
                                 let opt = document.createElement('option');
                                 opt.value = action;
                                 opt.innerHTML = action;

@@ -1,0 +1,21 @@
+{
+  "editor": {
+    "paletteLabel": "Server-Action",
+    "nameLabel": "名前",
+    "serverConfigLabel": "サーバ設定",
+    "thingConfigLabel": "Thing設定",
+    "actionNameLabel": "アクション名",
+    "actionDescriptionLabel": "アクションの説明",
+    "actionInputDataTypeLabel": "引数のデータ型",
+    "actionOutputDataTypeLabel": "戻り値のデータ型",
+    "outParams1": {
+      "tabLabel": "アクション呼び出し",
+      "outputLabel": "アクションの引数",
+      "actionArgs": {
+        "label": "引数の出力先",
+        "description": "アクションの引数の出力先。",
+        "placeholder": "引数の出力先"
+      }
+    }
+  }
+}
