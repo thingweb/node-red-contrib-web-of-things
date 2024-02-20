@@ -1,5 +1,8 @@
 # node-red-contrib-wot
 
+> [!IMPORTANT]  
+> The project has moved to https://github.com/eclipse-thingweb/node-red/tree/main/node-red-node-wot and this repository is archived.
+
 A [Node-RED](https://nodered.org/) package of nodes for the [Web of Things](https://www.w3.org/WoT/).
 
 Can be installed from the Node-RED palette manager directly or via npm (see [the npm package](https://www.npmjs.com/package/node-red-contrib-web-of-things)).
